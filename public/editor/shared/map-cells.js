@@ -7,11 +7,11 @@ export function splitTerrainRef(value){
 }
 export function encodeCells(values,objects=[]){
   const assetMap={'.':null},characters=new Map([[null,'.']]);let next=0;
-  const encode=value=>{if(!characters.has(value)){if(!splitTerrainRef(value)&&!validUUID(value))throw Error('素材引用不正确');const ch=symbols[next]??String.fromCharCode(0x100+next-symbols.length);next++;if(ch.charCodeAt(0)>=0xd800)throw Error('素材种类过多');characters.set(value,ch);assetMap[ch]=value;}return characters.get(value);};
+  const encode=value=>{if(!characters.has(value)){if(!splitTerrainRef(value)&&!validUUID(value))throw Error('Referencia de recurso incorrecta');const ch=symbols[next]??String.fromCharCode(0x100+next-symbols.length);next++;if(ch.charCodeAt(0)>=0xd800)throw Error('Demasiados tipos de recursos');characters.set(value,ch);assetMap[ch]=value;}return characters.get(value);};
   return {assetMap,cells:values.map(encode).join(''),objects:objects.map(o=>({...o,id:encode(o.id)}))};
 }
 export function decodeCells(layer,count){
-  const {cells,assetMap}=layer,fail=()=>{throw Error('地图格子字符或映射表不正确');};
+  const {cells,assetMap}=layer,fail=()=>{throw Error('Los caracteres de las casillas o la tabla de correspondencias del mapa son incorrectos');};
   if(typeof cells!=='string'||cells.length!==count||!assetMap||typeof assetMap!=='object'||Array.isArray(assetMap)||assetMap['.']!==null)fail();
   const seen=new Set();for(const [ch,value] of Object.entries(assetMap)){if(ch.length!==1||/[\ud800-\udfff]/.test(ch)||(ch!=='.'&&!((splitTerrainRef(value)||validUUID(value))&&!seen.has(value))))fail();if(ch!=='.')seen.add(value);}
   return Array.from(cells,ch=>{if(!Object.hasOwn(assetMap,ch))fail();return assetMap[ch];});

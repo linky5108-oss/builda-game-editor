@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "name": "未命名地图",
+  "name": "Mapa sin nombre",
   "width": 22,
   "height": 18,
   "tileSize": 32,
@@ -13,7 +13,7 @@
         ".": null,
         "A": "1e722367-71f0-564f-9759-e75e73005f3d"
       },
-      "name": "Dual 高台 · 孔洞、凹角、窄条、对角",
+      "name": "Dual elevado · huecos, esquinas interiores, franjas, diagonales",
       "visible": true,
       "offset": 0,
       "cells": "..........................................................................................AAAAAAAA..............AAAAAAAA.......A......AAAAAAAAAA......A.....AAA...AAAA............AAA...AAAA............AAAAAAAAAA............AAAAAAAAAAAAAAA.......AAAAAAAAAA....A.A...................A.....................A........A......................A.............................................................",

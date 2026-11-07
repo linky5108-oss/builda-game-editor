@@ -34,11 +34,11 @@ export function createWangProps({config, map, tools, selection, history, sheets,
       const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;
       const f=frames[terrainIndex][terrainMask(terrain,grid,...cell,terrainIndex)];
       if(f){const scale=Math.min(64/f.w,64/f.h);ctx.drawImage(sheets[terrainIndex],f.x,f.y,f.w,f.h,(64-f.w*scale)/2,(64-f.h*scale)/2,f.w*scale,f.h*scale);}
-      box.prepend(canvas);row('地形',name);
+      box.prepend(canvas);row('Terreno',name);
       return;
     }
     const state=grid.wang[i];
-    row('地形',name);
+    row('Terreno',name);
     const patch = (next) => {
       if (!cell) { tools.wangBrush={...state,...next}; refresh(); return; }
       const dirty=new Map();
@@ -58,16 +58,16 @@ export function createWangProps({config, map, tools, selection, history, sheets,
     if (state.center !== undefined) {
       const center = document.createElement('span');
       center.textContent = state.center;
-      row('中心地形', center);
+      row('Terreno central', center);
     }
     const neighborhood = state.center !== undefined ? wangNeighborhood(grid,i,def) : null;
     const candidates = def.tiles.map((tile,index)=>({tile,index})).filter(({tile}) =>
       wangTilePlaceable(tile) && (neighborhood
         ? wangCenterScore(tile,neighborhood) === 0
         : tile.edges.every((edge,d)=>edge === state.edges[d])));
-    const label = document.createElement('span');label.textContent='可用地块';box.append(label);
+    const label = document.createElement('span');label.textContent='Bloques disponibles';box.append(label);
     const variants = document.createElement('div');variants.className='wang-variants';
-    variants.setAttribute('role','group');variants.setAttribute('aria-label','符合规则的地块');
+    variants.setAttribute('role','group');variants.setAttribute('aria-label','Bloques que cumplen la regla');
     for (const {tile,index} of candidates) {
       const button = document.createElement('button');button.type='button';
       button.className='wang-variant';button.title=tile.label ?? tile.id;
@@ -87,7 +87,7 @@ export function createWangProps({config, map, tools, selection, history, sheets,
     }
     box.append(variants);
     if (!candidates.length) {
-      const hint=document.createElement('small');hint.textContent='原图缺少符合当前位置边角规则的地块';box.append(hint);
+      const hint=document.createElement('small');hint.textContent='La imagen original no tiene un bloque que cumpla la regla de bordes y esquinas de esta posición';box.append(hint);
     }
 
   }

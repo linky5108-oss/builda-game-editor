@@ -6,17 +6,17 @@ export function createMapSettings({ map, onOpen, onApply }) {
     node.append(...children);
     return node;
   };
-  const entry = make('button', { id: 'map-settings-entry', type: 'button', title: '地图设置', className: 'icon',
+  const entry = make('button', { id: 'map-settings-entry', type: 'button', title: 'Ajustes del mapa', className: 'icon',
     innerHTML: '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h2M12 7h8M4 17h8M18 17h2"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg>' });
-  entry.setAttribute('aria-label', '地图设置');
+  entry.setAttribute('aria-label', 'Ajustes del mapa');
   const dialog = make('dialog', { id: 'map-settings' });
-  dialog.setAttribute('aria-label', '地图设置');
+  dialog.setAttribute('aria-label', 'Ajustes del mapa');
   const name = make('input', { type: 'text', required: true, maxLength: 80 });
   const size = make('input', { type: 'number', required: true, min: 8, max: 128, step: 1 });
   const background = make('button', { type: 'button', className: 'map-background-color' });
-  background.setAttribute('aria-label', '背景色');
+  background.setAttribute('aria-label', 'Color de fondo');
   const colorDialog = make('dialog', { id: 'map-background-picker' });
-  colorDialog.setAttribute('aria-label', '背景色调色');
+  colorDialog.setAttribute('aria-label', 'Ajustar color de fondo');
   const setColor = color => { background.value = color; background.style.background = color; };
   background.addEventListener('click', () => {
     colorDialog.replaceChildren(createColorPicker(background.value, color => {
@@ -30,19 +30,19 @@ export function createMapSettings({ map, onOpen, onApply }) {
     if (e.target === colorDialog && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom)) colorDialog.close();
   });
   colorDialog.addEventListener('keydown', e => e.stopPropagation());
-  const close = make('button', { type: 'button', className: 'map-settings-close', title: '关闭地图设置',
+  const close = make('button', { type: 'button', className: 'map-settings-close', title: 'Cerrar ajustes del mapa',
     innerHTML: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>' });
-  close.setAttribute('aria-label', '关闭地图设置');
-  const apply = make('button', { type: 'button', textContent: '确定' });
+  close.setAttribute('aria-label', 'Cerrar ajustes del mapa');
+  const apply = make('button', { type: 'button', textContent: 'Aceptar' });
   const form = make('form', {}, [
-    make('header', {}, [make('h3', { textContent: '地图设置' }), close]),
-    make('label', {}, [make('span', { textContent: '地图名' }), name]),
-    make('label', {}, [make('span', { textContent: '地块尺寸' }), make('div', { className: 'number-with-unit' }, [size, make('small', { textContent: 'px' })])]),
-    make('label', {}, [make('span', { textContent: '背景色' }), background]),
-    make('p', { textContent: '修改地块尺寸后会保留地图并重新加载，撤销历史将清空。' }),
+    make('header', {}, [make('h3', { textContent: 'Ajustes del mapa' }), close]),
+    make('label', {}, [make('span', { textContent: 'Nombre del mapa' }), name]),
+    make('label', {}, [make('span', { textContent: 'Tamaño de bloque' }), make('div', { className: 'number-with-unit' }, [size, make('small', { textContent: 'px' })])]),
+    make('label', {}, [make('span', { textContent: 'Color de fondo' }), background]),
+    make('p', { textContent: 'Al cambiar el tamaño de bloque, el mapa se conserva y se recarga; el historial de deshacer se borrará.' }),
     make('footer', {}, [apply]),
   ]);
-  name.addEventListener('input', () => name.setCustomValidity(name.value.trim() ? '' : '请输入地图名'));
+  name.addEventListener('input', () => name.setCustomValidity(name.value.trim() ? '' : 'Escribe un nombre para el mapa'));
   close.addEventListener('click', () => dialog.close());
   dialog.addEventListener('keydown', e => e.stopPropagation());
   const applyChanges = e => {
@@ -58,7 +58,7 @@ export function createMapSettings({ map, onOpen, onApply }) {
   });
   entry.addEventListener('click', () => {
     onOpen();
-    name.value = map.name ?? '未命名地图';
+    name.value = map.name ?? 'Mapa sin nombre';
     name.setCustomValidity('');
     size.value = map.tileSize;
     setColor(map.backgroundColor);

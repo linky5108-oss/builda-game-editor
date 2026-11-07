@@ -68,24 +68,24 @@ export const ICONS = {
 };
 
 const TOOL_LABELS = {
-  pencil: '铅笔 (B)',
-  eraser: '橡皮 (E)',
-  shape: '形状 (U)',
-  fill: '填充 (F)',
-  select: '选择 (M)',
+  pencil: 'Lápiz (B)',
+  eraser: 'Borrador (E)',
+  shape: 'Forma (U)',
+  fill: 'Relleno (F)',
+  select: 'Selección (M)',
 };
 const SHAPE_LABELS = {
-  line: '线条',
-  circle: '圆形',
-  rect: '矩形',
-  circleOutline: '圆形框',
-  rectOutline: '矩形框',
+  line: 'Línea',
+  circle: 'Círculo',
+  rect: 'Rectángulo',
+  circleOutline: 'Contorno circular',
+  rectOutline: 'Contorno rectangular',
 };
 const SELECT_LABELS = {
-  selectRect: '方形选择',
-  selectCircle: '圆形选择',
-  selectWand: '魔法选择',
-  selectLasso: '套索选择',
+  selectRect: 'Selección rectangular',
+  selectCircle: 'Selección circular',
+  selectWand: 'Varita mágica',
+  selectLasso: 'Selección de lazo',
 };
 
 // A small real-tile preview: a 2x2 block of terrain t on a transparent
@@ -260,10 +260,10 @@ export function createPanel({ config, sheets, objectSprites = [], tools, actions
   window.addEventListener('resize', closeMenus);
 
   // ---- brush size: a property of the current tool (pencil / eraser / shape) ----
-  const sizeSlider = el('input', { type: 'range', min: 1, max: MAX_BRUSH, step: 1, title: '笔刷大小 ([ ])' });
+  const sizeSlider = el('input', { type: 'range', min: 1, max: MAX_BRUSH, step: 1, title: 'Tamaño del pincel ([ ])' });
   sizeSlider.addEventListener('input', () => setSize(Number(sizeSlider.value)));
   const sizeValue = el('span', { className: 'value' });
-  const sizeRow = el('div', { id: 'size-bar', title: '笔刷大小 ([ ])' }, [sizeSlider, sizeValue]);
+  const sizeRow = el('div', { id: 'size-bar', title: 'Tamaño del pincel ([ ])' }, [sizeSlider, sizeValue]);
 
   // ---- terrains ----
   const frames = sheetFrames(config);
@@ -280,8 +280,8 @@ export function createPanel({ config, sheets, objectSprites = [], tools, actions
   const objectButtons = (config.objects ?? []).map((o, i) => {
     const anims = objectAnimations(o);
     const icon = objectIcon(objectSprites[i], anims.frameCount, Infinity);
-    const names = anims.animations.length > 1 ? `，动画：${anims.animations.map((a) => a.label).join(' / ')}` : '';
-    const b = el('button', { className: 'terrain object', title: `${o.label}（占地 ${o.footprint[0]}×${o.footprint[1]}${names}）` }, [
+    const names = anims.animations.length > 1 ? `, animación: ${anims.animations.map((a) => a.label).join(' / ')}` : '';
+    const b = el('button', { className: 'terrain object', title: `${o.label} (ocupa ${o.footprint[0]}×${o.footprint[1]}${names})` }, [
       el('span', { className: 'asset-art' }, [icon]),
       el('span', { className: 'asset-name', textContent: o.label }),
     ]);
@@ -292,8 +292,8 @@ export function createPanel({ config, sheets, objectSprites = [], tools, actions
   });
   // ---- asset browser: one project pack and category at a time ----
   const entries = [
-    ...config.terrains.map((t, i) => ({ entry: t, button: terrainButtons[i], group: t.wang ? `wang:${i}` : '地形' })),
-    ...(config.objects ?? []).map((o, i) => ({ entry: o, button: objectButtons[i], group: o.group ?? '物体' })),
+    ...config.terrains.map((t, i) => ({ entry: t, button: terrainButtons[i], group: t.wang ? `wang:${i}` : 'Terreno' })),
+    ...(config.objects ?? []).map((o, i) => ({ entry: o, button: objectButtons[i], group: o.group ?? 'Objetos' })),
   ];
   const sources = [];
   for (const { entry } of entries)
@@ -301,7 +301,7 @@ export function createPanel({ config, sheets, objectSprites = [], tools, actions
   // Source switcher: a button outside the panel, top right (mirroring the
   // layer button on the left), opening a read-only menu of sources.
   const sourceName = el('span');
-  const sourceEntry = el('button', { id: 'source-entry', title: '图块集' });
+  const sourceEntry = el('button', { id: 'source-entry', title: 'Conjunto de bloques' });
   sourceEntry.innerHTML = ICONS.tiles;
   sourceEntry.append(sourceName);
   const sourceMenu = el('div', { id: 'source-menu', hidden: true });
@@ -362,12 +362,12 @@ export function createPanel({ config, sheets, objectSprites = [], tools, actions
       const row = el('div', { className: 'source-row' }, [pick]);
       return row;
     });
-    sourceMenu.replaceChildren(el('div', { className: 'source-title', textContent: '图块集' }), ...rows);
+    sourceMenu.replaceChildren(el('div', { className: 'source-title', textContent: 'Conjunto de bloques' }), ...rows);
   }
   const tabs = el('div', { className: 'category-tabs' });
   const grid = el('div', { className: 'section terrains' });
   const wangAtlas = createWangAtlas({ config, sheets, tools, changed: () => refresh(), annotationsSaved: actions.annotationsSaved, modeChanged: expandAnnotations });
-  const grip = el('div', { className: 'panel-grip', title: '拖动调整高度' });
+  const grip = el('div', { className: 'panel-grip', title: 'Arrastra para ajustar la altura' });
   const head = el('div', { className: 'panel-head' }, [tabs]);
   function measureAnnotationChrome(){
     const view=wangAtlas.el.querySelector('.wang-atlas-viewport').getBoundingClientRect();
@@ -392,9 +392,9 @@ export function createPanel({ config, sheets, objectSprites = [], tools, actions
   function showSource(id) {
     if (!wangAtlas.canSwitch()) return;
     source = sources.some((s) => s.id === id) ? id : (sources[0]?.id ?? '');
-    const name = sources.find((x) => x.id === source)?.name ?? '暂无素材';
+    const name = sources.find((x) => x.id === source)?.name ?? 'Aún no hay recursos';
     sourceName.textContent = name;
-    sourceEntry.title = `图块集：${name}（点击切换）`;
+    sourceEntry.title = `Conjunto de bloques: ${name} (toca para cambiar)`;
     store(SOURCE_KEY, source);
     category = null;
     render();
@@ -415,7 +415,7 @@ export function createPanel({ config, sheets, objectSprites = [], tools, actions
       ...[...groups].map(([g, list]) => {
         const wang = g.startsWith('wang:') ? config.terrains[Number(g.slice(5))] : null;
         const label = wang ? wang.label ?? wang.name : g;
-        const b = el('button', { type: 'button', textContent: label, title: wang ? label : `${label}（${list.length}）` });
+        const b = el('button', { type: 'button', textContent: label, title: wang ? label : `${label} (${list.length})` });
         b.dataset.group = g;
         b.addEventListener('click', () => showCategory(g));
         return b;
@@ -442,7 +442,7 @@ export function createPanel({ config, sheets, objectSprites = [], tools, actions
       active.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
     } else tabLine.hidden = true;
     const children = [...(groups.get(g) ?? [])];
-    if (!children.length) children.push(el('div', { className: 'group-title', textContent: '这个来源里没有素材' }));
+    if (!children.length) children.push(el('div', { className: 'group-title', textContent: 'No hay recursos en esta fuente' }));
     const wangIndices = typeof g === 'string' && g.startsWith('wang:') ? [Number(g.slice(5))] : [];
     shell.classList.toggle('wang-panel',wangIndices.length > 0);
     panel.classList.toggle('wang-panel',wangIndices.length > 0);
@@ -478,7 +478,7 @@ export function createPanel({ config, sheets, objectSprites = [], tools, actions
   const panelWidth = () => Math.round(Math.min(Math.max(200, innerWidth - 400), Math.max(220, preferredWidth)));
   const syncWidth = () => {
     document.documentElement.style.setProperty('--panel-width', `${panelWidth()}px`);
-    grip.title = landscape() ? '拖动调整宽度' : '拖动调整高度';
+    grip.title = landscape() ? 'Arrastra para ajustar el ancho' : 'Arrastra para ajustar la altura';
   };
   const setHeight = (h) => {
     const max = Math.max(MIN_H, window.innerHeight * 0.8);
@@ -516,8 +516,8 @@ export function createPanel({ config, sheets, objectSprites = [], tools, actions
 
   // ---- undo / redo: floats at the top centre of the area the panel leaves free ----
   const historyBar = el('div', { id: 'history-bar' }, [
-    iconBtn('undo', '撤销 (Ctrl+Z)', () => actions.undo()),
-    iconBtn('redo', '重做 (Ctrl+Shift+Z)', () => actions.redo()),
+    iconBtn('undo', 'Deshacer (Ctrl+Z)', () => actions.undo()),
+    iconBtn('redo', 'Rehacer (Ctrl+Shift+Z)', () => actions.redo()),
   ]);
 
   assetSheet.prepend(grip);
@@ -659,7 +659,7 @@ export function createObjectProps({ onPick, onPlay, onRename }) {
       const icon = objectIcon(sprite, def.frameCount);
       icon.showFrame?.(a.frames[0]);
       if (a.frames.length > 1 && icon.showFrame) previews.push([icon, a, -1]);
-      const b = el('button', { type: 'button', className: 'terrain', title: a.frames.length > 1 ? `${a.label}（${a.frames.length} 帧）` : a.label }, [
+      const b = el('button', { type: 'button', className: 'terrain', title: a.frames.length > 1 ? `${a.label} (${a.frames.length} fotogramas)` : a.label }, [
         icon,
         el('span', { textContent: a.label }),
       ]);
@@ -672,7 +672,7 @@ export function createObjectProps({ onPick, onPlay, onRename }) {
       value,
     ]);
     const name = el('input', { type: 'text', className: 'props-name', value: obj.name ?? def.label, maxLength: 80 });
-    name.setAttribute('aria-label', '物体名称');
+    name.setAttribute('aria-label', 'Nombre del objeto');
     name.addEventListener('change', () => {
       const value = name.value.trim();
       if (value) onRename(value);
@@ -684,18 +684,18 @@ export function createObjectProps({ onPick, onPlay, onRename }) {
       if (e.key === 'Escape') { name.value = obj.name ?? def.label; name.blur(); }
     });
     const rows = [
-      property('名称', name),
-      property('动画', def.animations.length > 1
+      property('Nombre', name),
+      property('Animación', def.animations.length > 1
         ? el('div', { className: 'props-anims' }, buttons)
         : el('span', { className: 'props-value', textContent: objectAnim(def, obj).label })),
     ];
     if (objectAnim(def, obj).frames.length > 1) {
       const check = el('input', { type: 'checkbox', checked: !obj?.paused });
-      check.setAttribute('aria-label', '播放动画');
-      check.title = '取消勾选：停在这个动画的第一帧';
+      check.setAttribute('aria-label', 'Reproducir animación');
+      check.title = 'Desmarcar: se detiene en el primer fotograma de esta animación';
       check.addEventListener('change', () => onPlay(check.checked));
       rows.push(el('label', { className: 'props-row props-play' }, [
-        el('span', { className: 'props-label', textContent: '播放动画' }),
+        el('span', { className: 'props-label', textContent: 'Reproducir animación' }),
         check,
       ]));
     }
@@ -730,16 +730,16 @@ export function createSelectionBar({ actions, parent=document.body, prefix='' })
   };
   const menu = scoped('div', { id: 'object-layer-menu', hidden: true });
   const closeMenu = () => { menu.hidden = true; move.setAttribute('aria-expanded', 'false'); };
-  const move = btn('layers', '移动图层', () => {
+  const move = btn('layers', 'Mover capa', () => {
     if (!menu.hidden) return closeMenu();
     const targets = actions.layerTargets();
     if (!targets) return;
     menu.replaceChildren(...targets.map(layer => {
-      const pick = scoped('button', { type: 'button', textContent: layer.name + (layer.visible ? '' : '（已隐藏）') });
+      const pick = scoped('button', { type: 'button', textContent: layer.name + (layer.visible ? '' : ' (oculta)') });
       pick.addEventListener('click', () => { closeMenu(); actions.moveToLayer(layer.index); });
       return pick;
     }));
-    if (!targets.length) menu.append(el('span', { className: 'empty-layers', textContent: '暂无其他图层' }));
+    if (!targets.length) menu.append(el('span', { className: 'empty-layers', textContent: 'No hay otras capas' }));
     menu.hidden = false;
     move.setAttribute('aria-expanded', 'true');
     const rect = move.getBoundingClientRect();
@@ -747,7 +747,7 @@ export function createSelectionBar({ actions, parent=document.body, prefix='' })
     menu.style.top = `${Math.max(8, rect.bottom + 8 + menu.offsetHeight <= window.innerHeight - 8 ? rect.bottom + 8 : rect.top - menu.offsetHeight - 8)}px`;
     menu.animate([{ opacity: 0, transform: 'translateY(-6px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 160 });
   });
-  move.setAttribute('aria-label', '移动图层');
+  move.setAttribute('aria-label', 'Mover capa');
   move.setAttribute('aria-expanded', 'false');
   move.setAttribute('aria-controls', prefix+'object-layer-menu');
   const onOutside=e => {
@@ -759,10 +759,10 @@ export function createSelectionBar({ actions, parent=document.body, prefix='' })
   parent.addEventListener('pointerdown',onOutside,true);
   document.addEventListener('keydown',onKey,true);
   const bar = scoped('div', { id: 'selection-bar', hidden: true }, [
-    btn('trash', '删除', () => actions.clearContents()),
+    btn('trash', 'Eliminar', () => actions.clearContents()),
     move,
-    btn('copy', '复制（拖动副本后确认）', () => actions.copy()),
-    btn('check', '确认（应用移动并完成选择）', () => actions.confirm()),
+    btn('copy', 'Duplicar (arrastra la copia y confirma)', () => actions.copy()),
+    btn('check', 'Confirmar (aplica el movimiento y termina la selección)', () => actions.confirm()),
   ]);
   parent.append(bar, menu);
 
@@ -803,7 +803,7 @@ export function createLayerPanel({ config, map, actions, parent=document.body, p
   const baseEl=el;
   const make=(tag,props={},children=[])=>{if(prefix&&props.id)props={...props,id:prefix+props.id,className:prefix+props.id};return baseEl(tag,props,children);};
 
-  const entry = make('button', { id: 'layer-entry', title: '图层' });
+  const entry = make('button', { id: 'layer-entry', title: 'Capas' });
   const entryName = make('span');
   entry.innerHTML = ICONS.layers;
   entry.append(entryName);
@@ -889,9 +889,9 @@ export function createLayerPanel({ config, map, actions, parent=document.body, p
     list.addEventListener('pointerup', finish);
     list.addEventListener('pointercancel', cancel);
   });
-  const addBtn = make('button', { className: 'icon', title: '新建图层', innerHTML: ICONS.plus });
+  const addBtn = make('button', { className: 'icon', title: 'Nueva capa', innerHTML: ICONS.plus });
   const sidebar = make('div', { id: 'layer-panel' }, [
-    make('div', { className: 'layer-header' }, [make('b', { textContent: '图层' }), addBtn]),
+    make('div', { className: 'layer-header' }, [make('b', { textContent: 'Capas' }), addBtn]),
     list,
   ]);
   // Modal: the backdrop covers the map and every other overlay; tapping it closes.
@@ -903,9 +903,9 @@ export function createLayerPanel({ config, map, actions, parent=document.body, p
   window.addEventListener('keydown',onKey);
   parent.append(entry, backdrop, sidebar);
 
-  // Gear menu: a bottom action sheet with 设置 / 复制 / 删除.
+  // Gear menu: a bottom action sheet with Ajustes / Duplicar / Eliminar.
   const sheet = make('dialog', { id: 'layer-actions' });
-  sheet.setAttribute('aria-label', '图层操作');
+  sheet.setAttribute('aria-label', 'Acciones de capa');
   sheet.addEventListener('keydown', (e) => e.stopPropagation());
   sheet.addEventListener('click', (e) => {
     const r = sheet.getBoundingClientRect();
@@ -924,20 +924,20 @@ export function createLayerPanel({ config, map, actions, parent=document.body, p
       sheet.close();
       if (i >= 0) fn(i);
     };
-    const settingsBtn = action('设置', () => {
+    const settingsBtn = action('Ajustes', () => {
       sheet.close();
       openSettings(layer);
     });
-    const copy = action('复制', () => run(actions.copy));
-    const remove = action('删除', () => run(actions.remove), 'danger');
+    const copy = action('Duplicar', () => run(actions.copy));
+    const remove = action('Eliminar', () => run(actions.remove), 'danger');
     remove.disabled = map.layers.length <= 1;
-    const cancel = make('button', { type: 'button', className: 'sheet-cancel', textContent: '取消' });
+    const cancel = make('button', { type: 'button', className: 'sheet-cancel', textContent: 'Cancelar' });
     cancel.addEventListener('click', () => sheet.close());
     sheet.replaceChildren(make('div', { className: 'sheet-group' }, [settingsBtn, copy, remove]), cancel);
     sheet.showModal();
   }
 
-  // Layer settings panel (from 设置), a centred modal with a close button:
+  // Layer settings panel (from Ajustes), a centred modal with a close button:
   // the name and the height offset (px).
   // The offset applies live so the map previews it, and all
   // changes while the sheet is open are one undo step; the name is committed
@@ -962,9 +962,9 @@ export function createLayerPanel({ config, map, actions, parent=document.body, p
     // Slider and number box edit the same value; positive lifts the layer.
     const range = { min: -MAX_LAYER_OFFSET, max: MAX_LAYER_OFFSET, step: 1, value: layer.offset };
     const slider = make('input', { type: 'range', className: 'offset-slider', ...range });
-    slider.setAttribute('aria-label', '高度偏移');
+    slider.setAttribute('aria-label', 'Desplazamiento de altura');
     const number = make('input', { type: 'number', className: 'offset-number', ...range });
-    number.setAttribute('aria-label', '高度偏移（像素，正数向上）');
+    number.setAttribute('aria-label', 'Desplazamiento de altura (píxeles, positivo hacia arriba)');
     let merge = false;
     const setOffset = (v) => {
       v = Math.round(Number(v));
@@ -983,26 +983,26 @@ export function createLayerPanel({ config, map, actions, parent=document.body, p
       }
     });
 
-    const done = make('button', { type: 'submit', className: 'settings-done', textContent: '完成' });
-    const close = make('button', { type: 'button', className: 'icon settings-close', title: '关闭', innerHTML: ICONS.close });
+    const done = make('button', { type: 'submit', className: 'settings-done', textContent: 'Listo' });
+    const close = make('button', { type: 'button', className: 'icon settings-close', title: 'Cerrado', innerHTML: ICONS.close });
     close.addEventListener('click', () => settings.close());
 
     const form = make('form', { method: 'dialog' }, [
-      make('div', { className: 'settings-header' }, [make('h3', { id: 'layer-settings-title', textContent: '图层设置' }), close]),
-      make('label', { className: 'settings-field', htmlFor: prefix+'layer-settings-name' }, [make('span', { textContent: '名称' }), name]),
+      make('div', { className: 'settings-header' }, [make('h3', { id: 'layer-settings-title', textContent: 'Ajustes de capa' }), close]),
+      make('label', { className: 'settings-field', htmlFor: prefix+'layer-settings-name' }, [make('span', { textContent: 'Nombre' }), name]),
       make('div', { className: 'settings-field' }, [
-        make('span', { textContent: '高度偏移' }),
+        make('span', { textContent: 'Desplazamiento de altura' }),
         slider,
         make('label', { className: 'offset-box' }, [number, make('small', { textContent: 'px' })]),
       ]),
-      make('p', { className: 'settings-hint', textContent: '正数向上，负数向下' }),
+      make('p', { className: 'settings-hint', textContent: 'Positivo hacia arriba, negativo hacia abajo' }),
       done,
     ]);
     if(!actions.setOffset){form.querySelector('.offset-slider').closest('.settings-field').remove();form.querySelector('.settings-hint').remove();}
     name.addEventListener('input', () => {
       done.disabled = !name.value.trim();
     });
-    // Enter, 完成, Esc and tapping outside all close; a valid new name sticks.
+    // Enter, Listo, Esc and tapping outside all close; a valid new name sticks.
     settings.addEventListener('close', commitName, { once: true });
     settings.replaceChildren(form);
     settings.showModal();
@@ -1031,19 +1031,19 @@ export function createLayerPanel({ config, map, actions, parent=document.body, p
   // changes even while closed, so opening never has to build DOM.
   function refresh() {
     layerDrag?.();
-    entryName.textContent = actions.isFileOpen?.() === false ? '点击打开文件' : map.activeLayer.name;
-    entry.title = actions.isFileOpen?.() === false ? '点击打开文件' : '图层';
+    entryName.textContent = actions.isFileOpen?.() === false ? 'Toca para abrir un archivo' : map.activeLayer.name;
+    entry.title = actions.isFileOpen?.() === false ? 'Toca para abrir un archivo' : 'Capas';
     list.replaceChildren();
     rows = [];
     for (let i = map.layers.length - 1; i >= 0; i--) {
       const layer = map.layers[i];
       const objects=actions.objects?.(layer,i)??[];
-      const expand=make('button',{type:'button',className:'icon layer-expand',title:expandedLayers.has(layer.id)?'收起物体':'展开物体',textContent:expandedLayers.has(layer.id)?'▾':'▸'});
-      expand.setAttribute('aria-label',`${layer.name}：展开或收起物体（${objects.length}）`);expand.setAttribute('aria-expanded',String(expandedLayers.has(layer.id)));
+      const expand=make('button',{type:'button',className:'icon layer-expand',title:expandedLayers.has(layer.id)?'Contraer objetos':'Expandir objetos',textContent:expandedLayers.has(layer.id)?'▾':'▸'});
+      expand.setAttribute('aria-label',`${layer.name}: expandir o contraer objetos (${objects.length})`);expand.setAttribute('aria-expanded',String(expandedLayers.has(layer.id)));
       expand.addEventListener('click',e=>{e.stopPropagation();if(expandedLayers.has(layer.id))expandedLayers.delete(layer.id);else expandedLayers.add(layer.id);refresh();});
-      const eye = make('button', { className: 'icon eye', title: '显示 / 隐藏' });
+      const eye = make('button', { className: 'icon eye', title: 'Mostrar / ocultar' });
       const thumb = make('canvas', { className: 'thumb', width: map.width, height: map.height });
-      const settings = make('button', { className: 'icon', title: `${layer.name}：图层设置`, innerHTML: ICONS.gear });
+      const settings = make('button', { className: 'icon', title: `${layer.name}: ajustes de capa`, innerHTML: ICONS.gear });
       const row = make('div', { className: 'layer-row' }, [
         expand,eye,
         thumb,
@@ -1065,9 +1065,9 @@ export function createLayerPanel({ config, map, actions, parent=document.body, p
       });
       list.append(row);
       if(expandedLayers.has(layer.id)){
-        if(!objects.length)list.append(make('div',{className:'layer-object-empty',textContent:'暂无物体'}));
+        if(!objects.length)list.append(make('div',{className:'layer-object-empty',textContent:'Aún no hay objetos'}));
         for(let j=objects.length-1;j>=0;j--){
-          const item=objects[j],child=make('div',{className:'layer-object-row',tabIndex:0,title:'点击选择物体；长按拖动排序'});
+          const item=objects[j],child=make('div',{className:'layer-object-row',tabIndex:0,title:'Toca para elegir un objeto; mantén presionado y arrastra para ordenar'});
           const thumbnail=make('canvas',{className:'layer-object-thumb',width:48,height:48});item.drawThumbnail?.(thumbnail);child.append(thumbnail,make('span',{textContent:item.name}));
           child.dataset.layerIndex=i;child.dataset.objectIndex=j;child.setAttribute('role','button');
           child.classList.toggle('active',!!item.selected);

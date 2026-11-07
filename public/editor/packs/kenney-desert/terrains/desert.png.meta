@@ -1,13 +1,13 @@
 {
-  "label": "沙漠地形",
+  "label": "Terreno desértico",
   "connect": "wang",
   "wang": {
     "labels": [
-      "沙地",
-      "紫草地",
-      "青草地",
-      "金属地板",
-      "深色土地"
+      "Suelo arenoso",
+      "Pasto púrpura",
+      "Pasto verde azulado",
+      "Piso metálico",
+      "Tierra oscura"
     ],
     "labelColors": [
       "#f3cdac",
@@ -16,7 +16,7 @@
       "#9897c0",
       "#dfaa88"
     ],
-    "boundary": "沙地",
+    "boundary": "Suelo arenoso",
     "columns": 10,
     "tiles": [
       [

@@ -69,7 +69,7 @@ function cityScene(config) {
   const { terrains } = config;
   const id = (name) => {
     const t = terrains.findIndex((x) => x.name === name);
-    if (t < 0) throw new Error(`city 场景需要地形 ${name}`);
+    if (t < 0) throw new Error(`El escenario city necesita el terreno ${name}`);
     return t;
   };
   const W = 36;
@@ -81,15 +81,15 @@ function cityScene(config) {
     return l.grid;
   };
 
-  const ground = layer('草地');
+  const ground = layer('Pasto');
   ground.cells.fill(id('grass'));
 
-  const plaza = layer('广场');
+  const plaza = layer('Plaza');
   paintEdge(plaza, rect(14, 9, 21, 14), id('plaza'));
 
   // Roads: one network, every adjacent pair joined. Main axes run through the
   // two gates and stop at the plaza; side lanes lead to house fronts.
-  const roads = layer('道路');
+  const roads = layer('Camino');
   paintEdge(
     roads,
     [
@@ -111,7 +111,7 @@ function cityScene(config) {
 
   // The wall and every object share a layer, so they sort north to south
   // among each other (a person behind the wall is hidden by it).
-  const build = layer('建筑');
+  const build = layer('Edificio');
   const wall = id('wall');
   const obj = (name) => config.objects.findIndex((o) => o.name === name);
   const gate = 18;
@@ -158,7 +158,7 @@ function desertScene(config) {
   const P = 'kenney-desert/';
   const id = (name) => {
     const t = terrains.findIndex((x) => x.name === P + name);
-    if (t < 0) throw new Error(`desert 场景需要地块包 kenney-desert 的地形 ${name}`);
+    if (t < 0) throw new Error(`El escenario desert necesita el terreno $ del paquete de bloques kenney-desert{name}`);
     return t;
   };
   const W = 30;
@@ -175,13 +175,13 @@ function desertScene(config) {
     for (let y = cy - r; y <= cy + r; y++)
       for (let x = cx - r; x <= cx + r; x++) if ((x - cx) ** 2 + (y - cy) ** 2 <= r * r + r) yield [x, y];
   };
-  layer('沙地', 'sand', rect(0, 0, W - 1, H - 1));
-  layer('紫草', 'purple', [...disc(6, 13, 3), ...disc(9, 15, 2), ...rect(17, 14, 19, 17), [21, 15]]);
-  layer('青草', 'teal', [...disc(23, 4, 2), ...disc(26, 6, 2), ...rect(12, 1, 15, 2)]);
+  layer('Suelo arenoso', 'sand', rect(0, 0, W - 1, H - 1));
+  layer('Hierba púrpura', 'purple', [...disc(6, 13, 3), ...disc(9, 15, 2), ...rect(17, 14, 19, 17), [21, 15]]);
+  layer('Hierba verde azulada', 'teal', [...disc(23, 4, 2), ...disc(26, 6, 2), ...rect(12, 1, 15, 2)]);
   // an L-shaped mesa with a notch, and a smaller one with a ledge
-  layer('紫色高台', 'mesa', [...rect(1, 1, 9, 4), ...rect(1, 5, 4, 8), ...rect(7, 5, 9, 6), [5, 1], [6, 2]]);
-  layer('青色高台', 'mesa_teal', [...rect(19, 9, 26, 11), ...rect(23, 12, 26, 13), ...rect(20, 8, 21, 8)]);
-  const yard = map.createLayer('围栏');
+  layer('Plataforma púrpura', 'mesa', [...rect(1, 1, 9, 4), ...rect(1, 5, 4, 8), ...rect(7, 5, 9, 6), [5, 1], [6, 2]]);
+  layer('Plataforma verde azulada', 'mesa_teal', [...rect(19, 9, 26, 11), ...rect(23, 12, 26, 13), ...rect(20, 8, 21, 8)]);
+  const yard = map.createLayer('Valla');
   map.layers.push(yard);
   paintEdge(yard.grid, [...hline(12, 16, 9), ...hline(12, 16, 13), ...vline(12, 9, 13), ...vline(16, 9, 13)], id('fence'));
   const obj = (name) => config.objects.findIndex((o) => o.name === P + name);

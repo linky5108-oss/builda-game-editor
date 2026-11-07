@@ -624,7 +624,7 @@ button.terrain.active span {
   font-weight: 600;
 }
 
-/* Layer settings panel (from 设置): name + height offset, centred modal. */
+/* Layer settings panel (from Ajustes): name + height offset, centred modal. */
 :is(#layer-settings, .ui-map-layer-settings) {
   position: fixed;
   inset: 0;

@@ -44,7 +44,7 @@ export function runDemo(createRenderer) {
     console.error(err);
     const box = document.createElement('div');
     box.id = 'error';
-    box.textContent = `初始化失败: ${err.message}`;
+    box.textContent = `Error al iniciar: ${err.message}`;
     document.body.append(box);
   });
 }
@@ -63,7 +63,7 @@ async function start(createRenderer) {
     let text = offlineData()?.startupMap;
     if (text === undefined) {
       const response = await fetch('../' + startupFile, { cache: 'no-cache' });
-      if (!response.ok) throw new Error(`读取初始地图失败：${response.status}`);
+      if (!response.ok) throw new Error(`Error al leer el mapa inicial: ${response.status}`);
       text = await response.text();
     }
     initialMap = readMapFile(text, config);
@@ -92,14 +92,14 @@ async function start(createRenderer) {
   const terrains = config.terrains;
   // Map-settings reloads restore the open map; fresh starts load startupFile.
   let fileOpen = !!initialMap;
-  let fileName = sessionStorage.getItem('tilemap:carried-filename') ?? startupFile?.split('/').pop() ?? '地图.tilemap';
+  let fileName = sessionStorage.getItem('tilemap:carried-filename') ?? startupFile?.split('/').pop() ?? 'mapa.tilemap';
   sessionStorage.removeItem('tilemap:carried-filename');
   function emptyMap() {
     const next = new TileMap(32, 32, terrainHeights(config.terrains), terrainUsesCellPlacement(config.terrains));
     next.terrains = config.terrains;
     next.tileSize = config.tileSize;
-    next.name = '未命名地图';
-    next.insertLayer(next.createLayer('图层 1'), 0);
+    next.name = 'Mapa sin nombre';
+    next.insertLayer(next.createLayer('Capa 1'), 0);
     return next;
   }
   const map = initialMap ?? emptyMap();
@@ -401,7 +401,7 @@ async function start(createRenderer) {
       }
     },
     actions: {
-      objects:layer=>layer.objects.map(o=>({name:o.name??map.objectDefs[o.type]?.label??'物体',selected:o===tools.selectedObject,drawThumbnail:thumb=>{const def=map.objectDefs[o.type],image=objectSprites[o.type],c=thumb.getContext('2d'),k=Math.min(48/def.sw,48/def.sh);c.imageSmoothingEnabled=false;c.drawImage(image,objectFrame(def,performance.now(),o)*def.sw,0,def.sw,def.sh,(48-def.sw*k)/2,(48-def.sh*k)/2,def.sw*k,def.sh*k);}})),
+      objects:layer=>layer.objects.map(o=>({name:o.name??map.objectDefs[o.type]?.label??'Objetos',selected:o===tools.selectedObject,drawThumbnail:thumb=>{const def=map.objectDefs[o.type],image=objectSprites[o.type],c=thumb.getContext('2d'),k=Math.min(48/def.sw,48/def.sh);c.imageSmoothingEnabled=false;c.drawImage(image,objectFrame(def,performance.now(),o)*def.sw,0,def.sw,def.sh,(48-def.sw*k)/2,(48-def.sh*k)/2,def.sw*k,def.sh*k);}})),
       selectObject:(i,j)=>{cancelEdit();map.active=i;tools.selectedObject=map.layers[i].objects[j];selection.clear();relayer();requestAnimationFrame(()=>focusObject(tools.selectedObject));},
       reorderObject:(i,from,to)=>{cancelEdit();const layer=map.layers[i],items=layer.objects.slice(),dirty=new Map();const [item]=items.splice(from,1);items.splice(to,0,item);history.begin(layer);history.setObjects(items,dirty);history.commit();relayer();},
       isFileOpen: () => fileOpen,
@@ -538,10 +538,10 @@ async function start(createRenderer) {
   });
   const fileBar = Object.assign(document.createElement('div'), { id: 'file-bar' });
   const fileIcons = {
-    打开: '<path d="M3 7V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v2M3 7v12a2 2 0 0 0 2 2h14l3-11H7L5 21"/>',
-    新建: '<path d="M14 2H5v20h14V7l-5-5v5h5M8 14h8m-4-4v8"/>',
-    保存: '<path d="M4 3h13l4 4v14H3V3h1Zm3 0v6h9V3M7 21v-8h10v8"/>',
-    关闭: '<path d="m6 6 12 12M18 6 6 18"/>',
+    Abrir: '<path d="M3 7V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v2M3 7v12a2 2 0 0 0 2 2h14l3-11H7L5 21"/>',
+    Nuevo: '<path d="M14 2H5v20h14V7l-5-5v5h5M8 14h8m-4-4v8"/>',
+    Guardar: '<path d="M4 3h13l4 4v14H3V3h1Zm3 0v6h9V3M7 21v-8h10v8"/>',
+    Cerrar: '<path d="m6 6 12 12M18 6 6 18"/>',
   };
   const fileButton = (label, action) => {
     const button = Object.assign(document.createElement('button'), {
@@ -549,10 +549,10 @@ async function start(createRenderer) {
       innerHTML: `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${fileIcons[label]}</svg>`,
     });
     button.setAttribute('aria-label', label);
-    button.dataset.fileAction = { 打开: 'open', 新建: 'new', 保存: 'save', 关闭: 'close' }[label];
-    button.dataset.fileState = ['打开', '新建'].includes(label) ? 'closed' : 'open';
+    button.dataset.fileAction = { Abrir: 'open', Nuevo: 'new', Guardar: 'save', Cerrar: 'close' }[label];
+    button.dataset.fileState = ['Abierto', 'Nuevo'].includes(label) ? 'closed' : 'open';
     if (button.dataset.fileState === 'closed') {
-      const text = label === '打开' ? '打开地图' : '新建地图';
+      const text = label === 'Abierto' ? 'Abrir mapa' : 'Nuevo mapa';
       button.append(Object.assign(document.createElement('span'), { textContent: text }));
       button.title = text;
       button.setAttribute('aria-label', text);
@@ -564,7 +564,7 @@ async function start(createRenderer) {
   let savedMap = fileOpen && !sessionStorage.getItem('tilemap:size-changed') ? writeMapFile(map, config) : null;
   sessionStorage.removeItem('tilemap:size-changed');
   const hasUnsavedChanges = () => fileOpen && writeMapFile(map, config) !== savedMap;
-  const canReplace = () => !hasUnsavedChanges() || confirm('打开另一张地图会丢弃未保存的修改，继续吗？');
+  const canReplace = () => !hasUnsavedChanges() || confirm('Abrir otro mapa descartará los cambios sin guardar. ¿Continuar?');
   function installMap(next, name) {
     if (next.tileSize !== T) {
       sessionStorage.setItem('tilemap:carried-filename', name);
@@ -594,15 +594,15 @@ async function start(createRenderer) {
     const file = mapInput.files[0];
     if (!file) return;
     try {
-      if (!/\.tilemap$/i.test(file.name)) throw new Error('请选择 .tilemap 地图文件');
+      if (!/\.tilemap$/i.test(file.name)) throw new Error('Selecciona un archivo de mapa .tilemap');
       const next = readMapFile(await file.text(), config);
       if (canReplace()) installMap(next, file.name);
-    } catch (err) { alert(`打开地图失败：${err.message}`); }
+    } catch (err) { alert(`Error al abrir el mapa: ${err.message}`); }
     finally { mapInput.value = ''; }
   });
-  fileButton('打开', () => mapInput.click());
-  fileButton('新建', () => { if (canReplace()) installMap(emptyMap(), '地图.tilemap'); });
-  const saveButton = fileButton('保存', () => {
+  fileButton('Abierto', () => mapInput.click());
+  fileButton('Nuevo', () => { if (canReplace()) installMap(emptyMap(), 'mapa.tilemap'); });
+  const saveButton = fileButton('Guardar', () => {
     if (!fileOpen) return;
     tools.end();
     tools.confirmMove();
@@ -612,9 +612,9 @@ async function start(createRenderer) {
     savedMap = writeMapFile(map, config);
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
-  const closeFileButton = fileButton('关闭', () => {
+  const closeFileButton = fileButton('Cerrado', () => {
     if (!fileOpen) return;
-    if (hasUnsavedChanges() && !confirm('关闭地图会丢弃未保存的修改，继续吗？')) return;
+    if (hasUnsavedChanges() && !confirm('Cerrar el mapa descartará los cambios sin guardar. ¿Continuar?')) return;
     gestures.cancel();
     cancelEdit();
     resizePanel.close();
@@ -627,7 +627,7 @@ async function start(createRenderer) {
     history.undoStack.length = history.redoStack.length = 0;
     fileOpen = false;
     savedMap = null;
-    fileName = '地图.tilemap';
+    fileName = 'mapa.tilemap';
     saveButton.disabled = true;
     document.body.classList.add('no-map');
     relayer();
@@ -640,7 +640,7 @@ async function start(createRenderer) {
   const uiInput = Object.assign(document.createElement('input'), {type:'file',accept:'.ui',hidden:true});
   uiInput.addEventListener('change', async () => {const file=uiInput.files[0];if(file)await uiEditor.openFile(file);uiInput.value='';});
   document.body.append(uiInput);
-  for (const [label, action] of [['新建 UI',()=>uiEditor.create()],['打开 UI',()=>uiInput.click()]]) {
+  for (const [label, action] of [['Nueva UI',()=>uiEditor.create()],['Abrir UI',()=>uiInput.click()]]) {
     const button=Object.assign(document.createElement('button'),{type:'button',textContent:label,title:label});
     button.dataset.fileState='closed';button.addEventListener('click',action);fileBar.append(button);
   }
@@ -674,9 +674,9 @@ async function start(createRenderer) {
   const closePreviewIcon = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>';
   const previewButton = Object.assign(document.createElement('button'), {
     id: 'preview-entry', type: 'button', className: 'icon', innerHTML: previewIcon,
-    title: '预览',
+    title: 'Vista previa',
   });
-  previewButton.setAttribute('aria-label', '预览');
+  previewButton.setAttribute('aria-label', 'Vista previa');
   function setPreview(enabled) {
     if (preview === enabled) return;
     gestures.cancel();
@@ -696,8 +696,8 @@ async function start(createRenderer) {
     ring.className = '';
     document.body.classList.toggle('preview-mode', enabled);
     previewButton.innerHTML = enabled ? closePreviewIcon : previewIcon;
-    previewButton.title = enabled ? '关闭预览' : '预览';
-    previewButton.setAttribute('aria-label', enabled ? '关闭预览' : '预览');
+    previewButton.title = enabled ? 'Cerrar vista previa' : 'Vista previa';
+    previewButton.setAttribute('aria-label', enabled ? 'Cerrar vista previa' : 'Vista previa');
     renderer.drawAll();
     updateCamera();
     if (!enabled) previewButton.focus();
@@ -752,7 +752,7 @@ function checkSheets(sheets, config) {
   for (const key of ['sheetLayout', 'edgeSheetLayout']) {
     const masks = config[key].flat();
     if (masks.length !== MASK_COUNT || new Set(masks).size !== MASK_COUNT || masks.some((m) => !(m >= 0 && m < MASK_COUNT)))
-      throw new Error(`config.json 的 ${key} 必须是 4x4、恰好包含 0–15 各一次`);
+      throw new Error(`En config.json, ${key} debe ser 4x4 y contener cada número del 0 al 15 exactamente una vez`);
   }
   terrainHeights(config.terrains).forEach(({ height }, t) => {
     const wang = config.terrains[t].wang;
@@ -761,7 +761,7 @@ function checkSheets(sheets, config) {
     const img = sheets[t];
     if (img.width !== w || img.height !== h)
       throw new Error(
-        `${config.terrains[t].pack ? `地块包「${config.terrains[t].pack.name}」的 ` : ''}${config.terrains[t].tiles} 应为 ${w}x${h}（4x4 个区域，每个 1x${height + 1} 格、${T}px 一格），实际 ${img.width}x${img.height}`,
+        `${config.terrains[t].pack ? `En el paquete de bloques «${config.terrains[t].pack.name}»,  ` : ''}${config.terrains[t].tiles} debería ser ${w}x${h} (4x4 zonas, cada una de 1x${height + 1}  casillas, ${T} px por casilla), pero es ${img.width}x${img.height}`,
       );
   });
 }
@@ -788,7 +788,7 @@ function loadImage(src) {
     const img = new Image();
     img.onload = () => resolve(img);
     img.onerror = () =>
-      reject(new Error(`failed to load ${src.startsWith('blob:') ? '地块包里的图片' : src}，先运行 tools/gen_tileset.py 和 tools/gen_objects.py`));
+      reject(new Error(`failed to load ${src.startsWith('blob:') ? 'Imágenes del paquete de bloques' : src}; primero ejecuta tools/gen_tileset.py y tools/gen_objects.py`));
     img.src = src;
   });
 }

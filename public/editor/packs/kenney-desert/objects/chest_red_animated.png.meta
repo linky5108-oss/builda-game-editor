@@ -1,11 +1,11 @@
 {
   "name": "chest_red",
-  "label": "红色宝箱",
+  "label": "Cofre rojo",
   "frameCount": 2,
   "animations": [
     {
       "name": "closed",
-      "label": "关闭",
+      "label": "Cerrado",
       "frames": [
         1,
         0
@@ -14,7 +14,7 @@
     },
     {
       "name": "open",
-      "label": "打开",
+      "label": "Abierto",
       "frames": [
         0,
         1

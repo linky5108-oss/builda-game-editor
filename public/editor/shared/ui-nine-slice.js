@@ -12,7 +12,7 @@ export function createNineSliceEditor(parent,asset,initial,onStart,onChange){
   let slice=[...(initial??assetSlice(asset)??[0,0,0,0])];
   const im=asset.image,w=im.width,h=im.height;
   const dialog=make('div',{className:'ui-nine-editor'},parent);
-  make('p',{textContent:'拖动四条边界，或输入左、上、右、下边距（原图像素）。'},dialog);
+  make('p',{textContent:'Arrastra los cuatro bordes o escribe los márgenes izquierdo, superior, derecho e inferior (píxeles de la imagen original).'},dialog);
   const stage=make('div',{className:'ui-nine-source'},dialog);
   const source=make('canvas',{width:w,height:h},stage);source.getContext('2d').drawImage(im,0,0);
   const k=Math.min(8,240/w,180/h);stage.style.width=`${w*k}px`;stage.style.height=`${h*k}px`;
@@ -22,12 +22,12 @@ export function createNineSliceEditor(parent,asset,initial,onStart,onChange){
     lines.forEach((n,i)=>{n.style[i%2?'top':'left']=`${(i<2?slice[i]:(i===2?w:h)-slice[i])/(i%2?h:w)*100}%`;});
   };
   const set=(i,v)=>{if(Number.isFinite(v)){slice[i]=Math.max(0,Math.min((i%2?h:w)-slice[(i+2)%4]-1,Math.round(v)));update();onChange(slice.slice());}};
-  for(const [i,label]of ['左','上','右','下'].entries()){
+  for(const [i,label]of ['Izquierda','Arriba','Derecha','Abajo'].entries()){
     const row=make('label',{},fields);make('span',{textContent:label},row);
     const host=make('span',{className:'props-unit-input'},row);
-    const input=make('input',{type:'number',min:0,step:1,ariaLabel:label+'边距（px）'},host);
+    const input=make('input',{type:'number',min:0,step:1,ariaLabel:label+'Márgenes (px)'},host);
     make('span',{className:'props-unit',textContent:'px',ariaHidden:'true'},host);inputs.push(input);input.onchange=()=>{onStart();set(i,Number(input.value));};
-    const line=make('div',{className:'ui-nine-line '+(i%2?'horizontal':'vertical'),title:label+'边距'},stage);lines.push(line);
+    const line=make('div',{className:'ui-nine-line '+(i%2?'horizontal':'vertical'),title:label+'Márgenes'},stage);lines.push(line);
     let start;
     line.onpointerdown=e=>{e.preventDefault();onStart();start=slice[i];line.setPointerCapture(e.pointerId);};
     line.onpointermove=e=>{if(start===undefined)return;const r=stage.getBoundingClientRect(),value=i%2?(e.clientY-r.top)/r.height*h:(e.clientX-r.left)/r.width*w;set(i,i<2?value:(i===2?w:h)-value);};
@@ -35,7 +35,7 @@ export function createNineSliceEditor(parent,asset,initial,onStart,onChange){
   }
   const actions=make('div',{className:'ui-nine-actions'},dialog);
   const button=(label,fn)=>{const b=make('button',{type:'button',textContent:label},actions);b.onclick=fn;};
-  button('恢复素材默认',()=>{onStart();slice=[...(assetSlice(asset)??[0,0,0,0])];update();onChange(slice.slice());});
+  button('Restaurar valores del recurso',()=>{onStart();slice=[...(assetSlice(asset)??[0,0,0,0])];update();onChange(slice.slice());});
   dialog.addEventListener('keydown',e=>e.stopPropagation());
   update();
 }

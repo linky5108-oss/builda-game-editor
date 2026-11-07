@@ -95,7 +95,7 @@ export const SHEET_COLUMNS = 4;
 
 export function sheetFrame(mask, tileSize, layout, rows = 1) {
   const i = layout.flat().indexOf(mask);
-  if (i < 0) throw new Error(`sheetLayout 缺少 mask ${mask}`);
+  if (i < 0) throw new Error(`A sheetLayout le falta la máscara ${mask}`);
   return {
     x: (i % SHEET_COLUMNS) * tileSize,
     y: Math.floor(i / SHEET_COLUMNS) * rows * tileSize,
@@ -221,7 +221,7 @@ export class TileMap {
     const id = this.nextId++;
     return {
       id,
-      name: name ?? `图层 ${id}`,
+      name: name ?? `Capa ${id}`,
       visible: true,
       offset: 0,
       grid: new TerrainGrid(this.width, this.height),
@@ -314,7 +314,7 @@ export function objectAnimations(o) {
   if (Array.isArray(o.animations) && o.animations.length) {
     const animations = o.animations.map((a, i) => ({
       name: a.name ?? `anim${i}`,
-      label: a.label ?? a.name ?? `动画 ${i + 1}`,
+      label: a.label ?? a.name ?? `Animación ${i + 1}`,
       frames: a.frames?.length ? a.frames : [0],
       fps: a.fps ?? 6,
     }));
@@ -324,7 +324,7 @@ export function objectAnimations(o) {
   const n = Math.max(1, Math.round(o.frames ?? 1));
   return {
     frameCount: n,
-    animations: [{ name: 'default', label: n > 1 ? '动画' : '静止', frames: [...Array(n).keys()], fps: o.fps ?? 6 }],
+    animations: [{ name: 'default', label: n > 1 ? 'Animación' : 'Estático', frames: [...Array(n).keys()], fps: o.fps ?? 6 }],
   };
 }
 

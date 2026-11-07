@@ -6,22 +6,22 @@ export const expandWangId=id=>{if(typeof id!=='string')return id;const m=/^(\d+)
 export function expandWang(source){
   const w=structuredClone(source);
   if(Array.isArray(w.labelColors)){
-    if(w.labelColors.length!==w.labels.length)throw Error('Wang 标签颜色数量不正确');
+    if(w.labelColors.length!==w.labels.length)throw Error('Cantidad incorrecta de colores de etiquetas Wang');
     w.labelColors=Object.fromEntries(w.labels.map((label,i)=>[label,w.labelColors[i]]));
   }
   w.tiles=w.tiles.map((row,i)=>{
     let tile;
     if(row===null)tile={id:`gap-${i}`,annotations:Array(9).fill(null)};
     else if(Array.isArray(row)){
-      if(row.length<2||row.length>3||!['string','number'].includes(typeof row[0])||typeof row[1]!=='string'||row[1].length!==9)throw Error('Wang 地块数据不正确');
+      if(row.length<2||row.length>3||!['string','number'].includes(typeof row[0])||typeof row[1]!=='string'||row[1].length!==9)throw Error('Datos de bloque Wang incorrectos');
       const annotations=Array.from(row[1],ch=>{
         if(ch==='.')return null;
-        const index=codes.indexOf(ch);if(index<0||index>=w.labels.length)throw Error('Wang 标注字符不正确');
+        const index=codes.indexOf(ch);if(index<0||index>=w.labels.length)throw Error('Caracteres de anotación Wang incorrectos');
         return w.labels[index];
       });
       tile={id:typeof row[0]==='number'?`source-${String(row[0]).padStart(4,'0')}`:expandWangId(row[0]),annotations,...(row.length===3?{weight:row[2]}:{})};
     }else tile=row;
-    if(!tile||typeof tile!=='object')throw Error('Wang 地块数据不正确');
+    if(!tile||typeof tile!=='object')throw Error('Datos de bloque Wang incorrectos');
     if(!tile.edges&&Array.isArray(tile.annotations))tile.edges=[1,5,7,3].map(p=>tile.annotations[p]??w.boundary);
     return tile;
   });
@@ -29,7 +29,7 @@ export function expandWang(source){
 }
 export function compactWang(source){
   const w=structuredClone(source);
-  if(w.labels.length>codes.length)throw Error('Wang 标签最多 64 个');
+  if(w.labels.length>codes.length)throw Error('Máximo 64 etiquetas Wang');
   if(w.labelColors&&w.labels.every(label=>Object.hasOwn(w.labelColors,label)))w.labelColors=w.labels.map(label=>w.labelColors[label]);
   w.tiles=w.tiles.map((tile,i)=>{
     if(tile.weight===1)delete tile.weight;
@@ -43,7 +43,7 @@ export function compactWang(source){
         if(tile.id===`gap-${i}`&&a.every(v=>v===null)&&tile.weight===undefined)return null;
         const code=a.map(label=>{
           if(label===null)return '.';
-          const index=w.labels.indexOf(label);if(index<0)throw Error('Wang 标注标签不存在');
+          const index=w.labels.indexOf(label);if(index<0)throw Error('La etiqueta de anotación Wang no existe');
           return codes[index];
         }).join('');
         const compactId=compactWangId(tile.id);

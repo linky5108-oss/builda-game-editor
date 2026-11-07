@@ -26,7 +26,7 @@ export const WANG_DIRS = [[0,-1],[1,0],[0,1],[-1,0]];
 export function validateWang(t) {
   if (t.connect !== 'wang') return;
   const w = t.wang;
-  const fail = () => { throw new Error(`${t.name}: Wang 定义无效`); };
+  const fail = () => { throw new Error(`${t.name}: definición Wang no válida`); };
   if (!w || !Array.isArray(w.labels) || !w.labels.length || w.labels.some(x => typeof x !== 'string' || !x) || new Set(w.labels).size !== w.labels.length ||
       !w.labels.includes(w.boundary) || !Number.isInteger(w.columns) || w.columns < 1 || !Array.isArray(w.tiles) || !w.tiles.length || (t.height ?? 0) !== 0) fail();
   if(w.labelColors !== undefined && (!w.labelColors || typeof w.labelColors !== 'object' ||

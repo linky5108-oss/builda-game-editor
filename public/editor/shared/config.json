@@ -62,7 +62,7 @@
   "terrains": [
     {
       "name": "water",
-      "label": "水",
+      "label": "Agua",
       "tiles": "packs/builtin/terrains/water.png",
       "threshold": 0.0,
       "edgeNoise": 0.0,
@@ -76,7 +76,7 @@
     },
     {
       "name": "sand",
-      "label": "沙",
+      "label": "Arena",
       "tiles": "packs/builtin/terrains/sand.png",
       "threshold": 0.44,
       "edgeNoise": 0.1,
@@ -90,7 +90,7 @@
     },
     {
       "name": "grass",
-      "label": "草地",
+      "label": "Pasto",
       "tiles": "packs/builtin/terrains/grass.png",
       "threshold": 0.5,
       "edgeNoise": 0.12,
@@ -105,7 +105,7 @@
     },
     {
       "name": "stone",
-      "label": "石台",
+      "label": "Plataforma de piedra",
       "tiles": "packs/builtin/terrains/stone.png",
       "threshold": 0.66,
       "height": 2,
@@ -121,7 +121,7 @@
     },
     {
       "name": "road",
-      "label": "道路",
+      "label": "Camino",
       "connect": "edge",
       "tiles": "packs/builtin/terrains/road.png",
       "edgeNoise": 0.03,
@@ -136,7 +136,7 @@
     },
     {
       "name": "wall",
-      "label": "城墙",
+      "label": "Muralla",
       "connect": "edge",
       "height": 1,
       "extrude": "up",
@@ -154,7 +154,7 @@
     },
     {
       "name": "plaza",
-      "label": "广场",
+      "label": "Plaza",
       "connect": "edge",
       "style": "paving",
       "tiles": "packs/builtin/terrains/plaza.png",
@@ -171,8 +171,8 @@
   "objects": [
     {
       "name": "house_small",
-      "label": "小屋",
-      "group": "建筑",
+      "label": "Cabaña",
+      "group": "Edificio",
       "sprite": "packs/builtin/objects/house_small.png",
       "footprint": [
         2,
@@ -181,8 +181,8 @@
     },
     {
       "name": "house_wide",
-      "label": "房屋",
-      "group": "建筑",
+      "label": "Casa",
+      "group": "Edificio",
       "sprite": "packs/builtin/objects/house_wide.png",
       "footprint": [
         3,
@@ -191,8 +191,8 @@
     },
     {
       "name": "house_large",
-      "label": "大宅",
-      "group": "建筑",
+      "label": "Mansión",
+      "group": "Edificio",
       "sprite": "packs/builtin/objects/house_large.png",
       "footprint": [
         5,
@@ -201,8 +201,8 @@
     },
     {
       "name": "courtyard",
-      "label": "四合院",
-      "group": "建筑",
+      "label": "Casa con patio",
+      "group": "Edificio",
       "sprite": "packs/builtin/objects/courtyard.png",
       "footprint": [
         5,
@@ -211,8 +211,8 @@
     },
     {
       "name": "courtyard_large",
-      "label": "大四合院",
-      "group": "建筑",
+      "label": "Casa con patio grande",
+      "group": "Edificio",
       "sprite": "packs/builtin/objects/courtyard_large.png",
       "footprint": [
         6,
@@ -221,8 +221,8 @@
     },
     {
       "name": "house_long",
-      "label": "长屋",
-      "group": "建筑",
+      "label": "Casa alargada",
+      "group": "Edificio",
       "sprite": "packs/builtin/objects/house_long.png",
       "footprint": [
         5,
@@ -231,8 +231,8 @@
     },
     {
       "name": "hall",
-      "label": "正殿",
-      "group": "建筑",
+      "label": "Salón principal",
+      "group": "Edificio",
       "sprite": "packs/builtin/objects/hall.png",
       "footprint": [
         6,
@@ -241,8 +241,8 @@
     },
     {
       "name": "tower",
-      "label": "箭塔",
-      "group": "城防",
+      "label": "Torre de arqueros",
+      "group": "Defensas",
       "sprite": "packs/builtin/objects/tower.png",
       "footprint": [
         1,
@@ -255,8 +255,8 @@
     },
     {
       "name": "gate",
-      "label": "城门",
-      "group": "城防",
+      "label": "Puerta de la ciudad",
+      "group": "Defensas",
       "sprite": "packs/builtin/objects/gate.png",
       "footprint": [
         3,
@@ -269,8 +269,8 @@
     },
     {
       "name": "gate_v",
-      "label": "城门（竖）",
-      "group": "城防",
+      "label": "Puerta de la ciudad (vertical)",
+      "group": "Defensas",
       "sprite": "packs/builtin/objects/gate_v.png",
       "footprint": [
         1,
@@ -283,8 +283,8 @@
     },
     {
       "name": "tree",
-      "label": "树",
-      "group": "植物",
+      "label": "Árbol",
+      "group": "Plantas",
       "sprite": "packs/builtin/objects/tree.png",
       "footprint": [
         1,
@@ -293,8 +293,8 @@
     },
     {
       "name": "person_blue",
-      "label": "村民",
-      "group": "人物",
+      "label": "Aldeano",
+      "group": "Personaje",
       "sprite": "packs/builtin/objects/person_blue.png",
       "footprint": [
         1,
@@ -303,8 +303,8 @@
     },
     {
       "name": "person_red",
-      "label": "村民（红）",
-      "group": "人物",
+      "label": "Aldeano (rojo)",
+      "group": "Personaje",
       "sprite": "packs/builtin/objects/person_red.png",
       "footprint": [
         1,
@@ -313,8 +313,8 @@
     },
     {
       "name": "person_hat",
-      "label": "农夫",
-      "group": "人物",
+      "label": "Granjero",
+      "group": "Personaje",
       "sprite": "packs/builtin/objects/person_hat.png",
       "footprint": [
         1,
@@ -323,8 +323,8 @@
     },
     {
       "name": "stall_cloth",
-      "label": "布摊",
-      "group": "杂物",
+      "label": "Puesto de telas",
+      "group": "Cachivaches",
       "sprite": "packs/builtin/objects/stall_cloth.png",
       "footprint": [
         2,
@@ -333,8 +333,8 @@
     },
     {
       "name": "stall_gold",
-      "label": "黄摊",
-      "group": "杂物",
+      "label": "Puesto amarillo",
+      "group": "Cachivaches",
       "sprite": "packs/builtin/objects/stall_gold.png",
       "footprint": [
         2,
@@ -343,8 +343,8 @@
     },
     {
       "name": "banner",
-      "label": "旗杆",
-      "group": "杂物",
+      "label": "Asta de bandera",
+      "group": "Cachivaches",
       "sprite": "packs/builtin/objects/banner.png",
       "footprint": [
         1,
@@ -353,8 +353,8 @@
     },
     {
       "name": "barrel",
-      "label": "木桶",
-      "group": "杂物",
+      "label": "Barril de madera",
+      "group": "Cachivaches",
       "sprite": "packs/builtin/objects/barrel.png",
       "footprint": [
         1,
@@ -363,8 +363,8 @@
     },
     {
       "name": "crate",
-      "label": "木箱",
-      "group": "杂物",
+      "label": "Caja de madera",
+      "group": "Cachivaches",
       "sprite": "packs/builtin/objects/crate.png",
       "footprint": [
         1,

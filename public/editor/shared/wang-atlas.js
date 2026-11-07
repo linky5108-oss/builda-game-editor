@@ -24,19 +24,19 @@ export function createWangAtlas({config, sheets, tools, changed, annotationsSave
   const root=element('section',{className:'wang-atlas'});
   const toolbar=element('div',{className:'wang-atlas-toolbar wang-atlas-primary'});
   const cancelToolbar=element('div',{className:'wang-atlas-toolbar wang-atlas-cancel'});
-  const annotate=element('button',{innerHTML:ICONS.edit,title:'标注模式',ariaLabel:'标注模式',className:'wang-float-icon','ariaPressed':'false'});
-  const undo=element('button',{innerHTML:ICONS.undo,title:'撤销标注',ariaLabel:'撤销标注',className:'wang-float-icon'});
-  const redo=element('button',{innerHTML:ICONS.redo,title:'重做标注',ariaLabel:'重做标注',className:'wang-float-icon'});
+  const annotate=element('button',{innerHTML:ICONS.edit,title:'Modo de anotación',ariaLabel:'Modo de anotación',className:'wang-float-icon','ariaPressed':'false'});
+  const undo=element('button',{innerHTML:ICONS.undo,title:'Deshacer anotación',ariaLabel:'Deshacer anotación',className:'wang-float-icon'});
+  const redo=element('button',{innerHTML:ICONS.redo,title:'Rehacer anotación',ariaLabel:'Rehacer anotación',className:'wang-float-icon'});
   const historyBar=element('div',{className:'wang-atlas-history'});historyBar.append(undo,redo);
-  const cancel=element('button',{innerHTML:ICONS.close,title:'取消标注',ariaLabel:'取消标注',className:'wang-float-icon'});
-  const palette=element('div',{className:'wang-atlas-labels',role:'group','ariaLabel':'标注标签'});
-  const labelMenu=element('div',{className:'wang-label-menu',hidden:true,role:'group',ariaLabel:'标签操作'});
-  const colorBackdrop=element('button',{className:'wang-color-backdrop',hidden:true,type:'button',ariaLabel:'取消调色'});
+  const cancel=element('button',{innerHTML:ICONS.close,title:'Cancelar anotación',ariaLabel:'Cancelar anotación',className:'wang-float-icon'});
+  const palette=element('div',{className:'wang-atlas-labels',role:'group','ariaLabel':'Etiquetas de anotación'});
+  const labelMenu=element('div',{className:'wang-label-menu',hidden:true,role:'group',ariaLabel:'Acciones de etiqueta'});
+  const colorBackdrop=element('button',{className:'wang-color-backdrop',hidden:true,type:'button',ariaLabel:'Cancelar ajuste de color'});
   colorBackdrop.onpointerdown=e=>e.stopPropagation();
   colorBackdrop.onclick=e=>{e.preventDefault();e.stopPropagation();closeLabelMenu();};
   let menuAnchor=null;
-  const viewport=element('div',{className:'wang-atlas-viewport',tabIndex:0,'ariaLabel':'Wang 图集画布'});
-  viewport.title='点击选择地块；长按后拖动框选组合笔刷；直接拖动平移，滚轮缩放';
+  const viewport=element('div',{className:'wang-atlas-viewport',tabIndex:0,'ariaLabel':'Lienzo del atlas Wang'});
+  viewport.title='Toca para elegir un bloque; mantén presionado y arrastra para seleccionar un pincel combinado; arrastra para desplazar, rueda para hacer zoom';
   const canvas=element('canvas'); const ctx=canvas.getContext('2d');
   const status=element('div',{className:'wang-atlas-status',role:'status'});
   viewport.append(canvas,status);toolbar.append(annotate);cancelToolbar.append(cancel);
@@ -61,7 +61,7 @@ export function createWangAtlas({config, sheets, tools, changed, annotationsSave
   function persist() {
     const d=draft();d.changed=JSON.stringify(d.state)!==JSON.stringify(annotationState(terrain().wang));
     try {localStorage.setItem(`tilemap:wang-draft:${terrain().name}`,JSON.stringify({signature:d.signature,state:d.state}));}
-    catch {message='浏览器无法保留草稿，请点击确定保存。';}
+    catch {message='El navegador no puede conservar el borrador; toca Aceptar para guardar.';}
   }
   function checkpoint(){draft().redo=[];draft().undo.push(structuredClone(draft().state));if(draft().undo.length>100)draft().undo.shift();}
   function setMode(on){
@@ -94,7 +94,7 @@ export function createWangAtlas({config, sheets, tools, changed, annotationsSave
     if(menuAnchor===anchor){closeLabelMenu();return;}
     closeLabelMenu();menuAnchor=anchor;anchor.setAttribute('aria-expanded','true');
     labelMenu.replaceChildren();
-    const colorControl=element('button',{className:'wang-float-icon',title:'修改标签颜色',ariaLabel:'修改标签颜色',innerHTML:ICONS.color});
+    const colorControl=element('button',{className:'wang-float-icon',title:'Cambiar color de la etiqueta',ariaLabel:'Cambiar color de la etiqueta',innerHTML:ICONS.color});
     colorControl.onclick=()=>{
       const target=label;
       colorBackdrop.hidden=false;
@@ -104,7 +104,7 @@ export function createWangAtlas({config, sheets, tools, changed, annotationsSave
       }));
       positionLabelMenu();
     };
-    const del=element('button',{innerHTML:ICONS.trash,className:'wang-float-icon',title:'删除选中标签',ariaLabel:'删除选中标签',disabled:draft().state.labels.length===1});
+    const del=element('button',{innerHTML:ICONS.trash,className:'wang-float-icon',title:'Eliminar la etiqueta seleccionada',ariaLabel:'Eliminar la etiqueta seleccionada',disabled:draft().state.labels.length===1});
     del.onclick=()=>{checkpoint();removeAnnotationLabel(draft().state,label);label=draft().state.labels[0];message='';persist();refreshControls();draw();};
     labelMenu.append(colorControl,del);labelMenu.hidden=false;positionLabelMenu();
   }
@@ -115,35 +115,35 @@ export function createWangAtlas({config, sheets, tools, changed, annotationsSave
     closeLabelMenu();
     if(index===null)return;
     annotate.classList.toggle('active',mode);annotate.ariaPressed=String(mode);
-    annotate.innerHTML=mode?ICONS.check:ICONS.edit+'<span>标注</span>';
-    annotate.title=annotate.ariaLabel=saving?'保存中…':mode?'确定标注':'标注模式';
+    annotate.innerHTML=mode?ICONS.check:ICONS.edit+'<span>Anotar</span>';
+    annotate.title=annotate.ariaLabel=saving?'Guardando…':mode?'Confirmar anotación':'Modo de anotación';
     historyBar.hidden=cancel.hidden=!mode;undo.disabled=!draft().undo.length;redo.disabled=!draft().redo.length;
     palette.hidden=!mode;palette.replaceChildren();
     if(mode){
       const labels=draft().state.labels;
       labels.forEach(name=>{
-        const b=element('button',{className:'wang-label-swatch',title:name,ariaLabel:`标注标签 ${name}`});
+        const b=element('button',{className:'wang-label-swatch',title:name,ariaLabel:`Etiqueta de anotación ${name}`});
         b.style.setProperty('--label-color',draft().state.colors[name]);b.classList.toggle('active',name===label);
         b.setAttribute('aria-pressed',String(name===label));
         b.setAttribute('aria-expanded','false');
         b.onclick=()=>{if(label===name){openLabelMenu(b);return;}label=name;message='';refreshControls();draw();};palette.append(b);
       });
-      const add=element('button',{innerHTML:ICONS.plus,title:'增加标签',ariaLabel:'增加标签',className:'wang-float-icon'});
+      const add=element('button',{innerHTML:ICONS.plus,title:'Añadir etiqueta',ariaLabel:'Añadir etiqueta',className:'wang-float-icon'});
       add.disabled=labels.length>=64;
       add.onclick=()=>{
-        let number=1;while(labels.includes(`标签${number}`))number++;
-        const value=`标签${number}`;checkpoint();
+        let number=1;while(labels.includes(`Etiqueta ${number}`))number++;
+        const value=`Etiqueta ${number}`;checkpoint();
         draft().state.labels.push(value);draft().state.colors[value]=DEFAULT_LABEL_COLORS[(labels.length-1)%DEFAULT_LABEL_COLORS.length];
         label=value;message='';persist();refreshControls();draw();
       };
-      const erase=element('button',{innerHTML:ICONS.erase,title:'清除标注',ariaLabel:'清除标注',className:'wang-float-icon wang-erase'});erase.classList.toggle('active',label===null);
+      const erase=element('button',{innerHTML:ICONS.erase,title:'Borrar anotaciones',ariaLabel:'Borrar anotaciones',className:'wang-float-icon wang-erase'});erase.classList.toggle('active',label===null);
       erase.onclick=()=>{label=null;refreshControls();draw();};palette.append(add);palette.prepend(erase);
     }
     updateStatus();
   }
   function updateStatus() {
     const pattern=tools.terrain===index?tools.wangBrush.pattern:null;
-    const text=message||(!mode&&pattern?`组合笔刷 ${pattern.width} × ${pattern.height} · 循环绘制 / 填充 / 图形`:'');
+    const text=message||(!mode&&pattern?`Pincel combinado ${pattern.width} × ${pattern.height} · Dibujo / relleno / formas en bucle`:'');
     status.hidden=!text;
     status.textContent=text;
   }
@@ -260,7 +260,7 @@ export function createWangAtlas({config, sheets, tools, changed, annotationsSave
       if(cancel)draft().state=gesture.before;
       else if(JSON.stringify(gesture.before)!==JSON.stringify(draft().state)){draft().redo=[];draft().undo.push(gesture.before);if(draft().undo.length>100)draft().undo.shift();persist();}
     } else if(!cancel&&!mode&&!space&&!gesture.moved&&e.button===0){
-      const h=hit(...point(e));if(h){const tile=terrain().wang.tiles[h.tile],brush=wangBrushForTile(terrain(),tile);if(!brush){message='请先标注这个地块的中间格';}else{activate();selectedRect=null;selected=h.tile;tools.wangBrush=brush;message='';changed();}}
+      const h=hit(...point(e));if(h){const tile=terrain().wang.tiles[h.tile],brush=wangBrushForTile(terrain(),tile);if(!brush){message='Primero anota la casilla central de este bloque';}else{activate();selectedRect=null;selected=h.tile;tools.wangBrush=brush;message='';changed();}}
       else {
         selected=null;selectedRect=null;hover=null;message='';
         tools.wangBrush={};tools.terrain=null;changed();
@@ -297,7 +297,7 @@ export function createWangAtlas({config, sheets, tools, changed, annotationsSave
     if(saving)return;
     const t=terrain(),d=draft();
     if(!d.changed){setMode(false);return;}
-    saving=true;message='正在保存标注…';refreshControls();root.inert=true;
+    saving=true;message='Guardando anotaciones…';refreshControls();root.inert=true;
     try{
       const result=await saveAnnotationFile(t,JSON.parse(d.signature),d.state);
       t.wang=result.wang;
@@ -310,8 +310,8 @@ export function createWangAtlas({config, sheets, tools, changed, annotationsSave
         : {center:t.wang.labels.includes(center)?center:t.wang.tiles.find(tile=>wangTilePlaceable(tile)&&tile.annotations?.[4]!=null)?.annotations[4]??t.wang.boundary};
       if(t.placement!=='tile')selected=null;
       annotationsSaved?.(index);
-      setMode(false);message=result.message??'标注已保存到素材包文件';
-    }catch(error){message=error.name==='AbortError'?'已取消保存，当前草稿已保留。':`保存失败：${error.message} 当前草稿已保留。`;}
+      setMode(false);message=result.message??'Anotaciones guardadas en el archivo del paquete de recursos';
+    }catch(error){message=error.name==='AbortError'?'Guardado cancelado; el borrador actual se conserva.':`Error al guardar: ${error.message} El borrador actual se conserva.`;}
     finally{saving=false;root.inert=false;refreshControls();draw();}
   }
   new ResizeObserver(resize).observe(viewport);

@@ -21,13 +21,13 @@ export async function fetchProjectPacks(base = '../packs/') {
   });
   if (!base.endsWith('/')) base += '/';
   const response = await fetch(base + 'index.json', { cache: 'no-cache' });
-  if (!response.ok) throw new Error(`读取素材目录失败: ${response.status}`);
+  if (!response.ok) throw new Error(`Error al leer la carpeta de recursos: ${response.status}`);
   const { packs } = await response.json();
   if (!Array.isArray(packs) || packs.some(p => typeof p !== 'string' || !/^[a-zA-Z0-9_-]+$/.test(p)))
-    throw new Error('素材目录必须是 packs 下的包文件夹名称列表');
+    throw new Error('La carpeta de recursos debe ser una lista de nombres de carpetas de paquetes dentro de packs');
   const loaded = [];
   for (const folder of new Set(packs)) loaded.push(await fetchPack(base + folder));
-  if (new Set(loaded.map(p => p.id)).size !== loaded.length) throw new Error('素材包 id 重复');
+  if (new Set(loaded.map(p => p.id)).size !== loaded.length) throw new Error('ID de paquete de recursos duplicado');
   return loaded;
 }
 
@@ -37,14 +37,14 @@ export async function fetchPack(base) {
   let manifest;
   if(res.status===404){
     res=await fetch(base+'pack.json',{cache:'no-cache'});
-    if(!res.ok)throw Error(`读取素材包失败：${res.status}`);
+    if(!res.ok)throw Error(`Error al leer el paquete de recursos: ${res.status}`);
     manifest=await res.json();
   }else{
-    if(!res.ok)throw Error(`读取 pack.meta 失败：${res.status}`);
+    if(!res.ok)throw Error(`Error al leer pack.meta: ${res.status}`);
     const header=await res.json(),documents={};
-    if(!Array.isArray(header.assets)||header.assets.some(p=>!validAssetPath(p)))throw Error('素材索引格式不正确');
+    if(!Array.isArray(header.assets)||header.assets.some(p=>!validAssetPath(p)))throw Error('El formato del índice de recursos es incorrecto');
     for(let offset=0;offset<header.assets.length;offset+=8)await Promise.all(header.assets.slice(offset,offset+8).map(async path=>{
-      const response=await fetch(base+path,{cache:'no-cache'});if(!response.ok)throw Error(`读取 ${path} 失败：${response.status}`);documents[path]=await response.json();
+      const response=await fetch(base+path,{cache:'no-cache'});if(!response.ok)throw Error(`Leyendo ${path}  falló: ${response.status}`);documents[path]=await response.json();
     }));
     manifest=assemblePack(header,documents);
   }
@@ -54,7 +54,7 @@ export async function fetchPack(base) {
   for (let offset = 0; offset < paths.length; offset += 8) await Promise.all(
     paths.slice(offset, offset + 8).map(async (p) => {
       const r = await fetch(base + p, { cache: 'no-cache' });
-      if (!r.ok) throw new Error(`读取 ${base}${p} 失败: ${r.status}`);
+      if (!r.ok) throw new Error(`Leyendo ${base}${p}  falló: ${r.status}`);
       files.set(p, await r.blob());
     }),
   );
@@ -62,12 +62,12 @@ export async function fetchPack(base) {
 }
 
 function makePack(manifest, files, folder) {
-  if (manifest.format && manifest.format !== 'tilemap-pack') throw new Error(`素材包的 format 不是 tilemap-pack`);
+  if (manifest.format && manifest.format !== 'tilemap-pack') throw new Error(`El format del paquete de recursos no es tilemap-pack`);
   const id = slug(manifest.id ?? manifest.name ?? folder);
   const missing = [...(manifest.terrains ?? []).map((t) => t.tiles), ...(manifest.objects ?? []).map((o) => o.sprite)].filter(
     (p) => !files.has(p),
   );
-  if (missing.length) throw new Error(`包里缺少图片：${missing.slice(0, 3).join('、')}${missing.length > 3 ? ' 等' : ''}`);
+  if (missing.length) throw new Error(`Falta una imagen en el paquete: ${missing.slice(0, 3).join(', ')}${missing.length > 3 ? ' , etc.' : ''}`);
   return { id, name: manifest.name ?? folder, folder, manifest, files };
 }
 
@@ -88,7 +88,7 @@ export function mergePacks(config, packs) {
   const assetUUIDs=new Set();
   for (const pack of packs) {
     for(const entry of [...pack.manifest.terrains,...pack.manifest.objects,...(pack.manifest.ui?.elements??[]),...(pack.manifest.fonts??[]),...(pack.manifest.sounds??[])]){
-      if(!validUUID(entry.uuid)||assetUUIDs.has(entry.uuid))throw Error(`素材 UUID 无效或重复：${entry.name}`);assetUUIDs.add(entry.uuid);
+      if(!validUUID(entry.uuid)||assetUUIDs.has(entry.uuid))throw Error(`UUID de recurso no válido o duplicado: ${entry.name}`);assetUUIDs.add(entry.uuid);
     }
     const m = pack.manifest;
     const scale = T / (m.tileSize ?? T);
@@ -110,7 +110,7 @@ export function mergePacks(config, packs) {
         scale,
         layout: t.connect === 'wang' ? null : (edge ? m.edgeSheetLayout : m.sheetLayout) ?? null,
         pack: ref,
-        group: '地形',
+        group: 'Terreno',
       });
     }
     for (const o of m.objects ?? []) {
@@ -122,12 +122,12 @@ export function mergePacks(config, packs) {
         src: url(o.sprite),
         scale,
         pack: ref,
-        group: o.group ?? '物体',
+        group: o.group ?? 'Objetos',
         connects: o.connects ? { ...o.connects, terrain: name(o.connects.terrain) } : undefined,
       });
     }
   }
-  if (terrains.length >= EMPTY) throw new Error(`地形太多（最多 ${EMPTY - 1} 种），请移除一些地块包`);
+  if (terrains.length >= EMPTY) throw new Error(`Demasiados terrenos (máximo ${EMPTY - 1}  tipos); elimina algunos paquetes de bloques`);
   return { ...config, terrains, objects };
 }
 
@@ -160,10 +160,10 @@ export function fitSheet(img, { scale = 1, from = null, to = null, rows = 1 }) {
 
 // Files reference asset UUIDs directly; numeric indices are only used in memory.
 export function serializeMap(map, config) {
-  const uuid=asset=>{if(!validUUID(asset?.uuid))throw Error('素材缺少有效 UUID');return asset.uuid;};
+  const uuid=asset=>{if(!validUUID(asset?.uuid))throw Error('Al recurso le falta un UUID válido');return asset.uuid;};
   return {
     v: 2,
-    name: map.name ?? '未命名地图',
+    name: map.name ?? 'Mapa sin nombre',
     width: map.width,
     height: map.height,
     tileSize: map.tileSize,
@@ -190,7 +190,7 @@ export function deserializeMap(data, config) {
   const { terrains } = config;
   const tIndex = new Map(terrains.map((t, i) => [t.uuid, i]));
   const oIndex = new Map((config.objects ?? []).map((o, i) => [o.uuid, i]));
-  if(data.v!==2)throw Error("地图格式不正确，请使用 UUID 地图格式");
+  if(data.v!==2)throw Error("Formato de mapa incorrecto; usa el formato de mapa con UUID");
   const map = new TileMap(data.width, data.height, terrainHeights(terrains), terrainUsesCellPlacement(terrains));
   for (const l of data.layers) {
     const layer = map.createLayer(l.name);
@@ -208,7 +208,7 @@ export function deserializeMap(data, config) {
     for(let i=0;i<refs.length;i++){
       const parsed=splitTerrainRef(refs[i]);if(!parsed?.variant)continue;
       const def=terrains[layer.grid.cells[i]]?.wang,tile=def?.tiles.find(t=>compactWangId(t.id)===parsed.variant);
-      if(!tile||!wangTilePlaceable(tile))throw Error(`找不到 Wang 地块：${parsed.variant}`);
+      if(!tile||!wangTilePlaceable(tile))throw Error(`No se encontró el bloque Wang: ${parsed.variant}`);
       layer.grid.wang[i]={tile:tile.id,edges:[...tile.edges],locked:false,...(tile.annotations?.[4]!=null?{center:tile.annotations[4]}:{})};
     }
     for (const o of l.objects) {
@@ -223,7 +223,7 @@ export function deserializeMap(data, config) {
   map.terrains = terrains;
   map.objectDefs = objectDefs(config);
   map.tileSize = data.tileSize ?? 32;
-  map.name = data.name ?? '未命名地图';
+  map.name = data.name ?? 'Mapa sin nombre';
   map.backgroundColor = data.backgroundColor ?? '#6b9fc4';
   for (const layer of map.layers) map.refreshPorts(layer);
   return map;
@@ -233,7 +233,7 @@ export function carryMap(map, config) {
   try {
     sessionStorage.setItem(CARRY_KEY, JSON.stringify(serializeMap(map, config)));
   } catch (err) {
-    console.warn('地图太大，无法在重新载入时保留', err);
+    console.warn('El mapa es demasiado grande para conservarlo al recargar', err);
   }
 }
 
@@ -250,7 +250,7 @@ export function takeCarriedMap(config) {
   try {
     return deserializeMap(JSON.parse(raw), config);
   } catch (err) {
-    console.warn('无法恢复地图', err);
+    console.warn('No se pudo recuperar el mapa', err);
     return null;
   }
 }

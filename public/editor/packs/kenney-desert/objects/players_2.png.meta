@@ -1,10 +1,10 @@
 {
-  "label": "长发冒险者",
+  "label": "Aventurera de pelo largo",
   "frameCount": 4,
   "animations": [
     {
       "name": "walk",
-      "label": "走动",
+      "label": "Caminar",
       "frames": [
         0,
         1
@@ -13,14 +13,14 @@
     },
     {
       "name": "jump",
-      "label": "跳起",
+      "label": "Saltar",
       "frames": [
         2
       ]
     },
     {
       "name": "down",
-      "label": "倒地",
+      "label": "Caer",
       "frames": [
         3
       ]

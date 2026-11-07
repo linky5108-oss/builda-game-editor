@@ -1,7 +1,7 @@
 {
   "version": 2,
   "id": "kenney-desert",
-  "name": "Kenney 沙漠射击",
+  "name": "Kenney Disparos en el desierto",
   "tileSize": 32,
   "sheetLayout": [
     [
@@ -56,7 +56,7 @@
     ]
   ],
   "groups": {
-    "场景": [
+    "Escenario": [
       "objects/building.png",
       "objects/cave.png",
       "objects/arch.png",
@@ -111,7 +111,7 @@
       "objects/tile_227.png",
       "objects/tile_228.png"
     ],
-    "物品": [
+    "Artículos": [
       "objects/key.png",
       "objects/key_red.png",
       "objects/weapons_000.png",
@@ -135,7 +135,7 @@
       "objects/weapons_018.png",
       "objects/weapons_019.png"
     ],
-    "角色": [
+    "Personajes": [
       "objects/players_1.png",
       "objects/players_2.png",
       "objects/players_3.png",

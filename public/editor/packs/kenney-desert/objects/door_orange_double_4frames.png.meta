@@ -1,6 +1,6 @@
 {
   "name": "door_orange_double",
-  "label": "橙色双开门",
+  "label": "Puerta naranja doble",
   "footprint": [
     2,
     1
@@ -9,7 +9,7 @@
   "animations": [
     {
       "name": "closed",
-      "label": "关闭",
+      "label": "Cerrado",
       "frames": [
         3,
         2,
@@ -20,7 +20,7 @@
     },
     {
       "name": "open",
-      "label": "打开",
+      "label": "Abierto",
       "frames": [
         0,
         1,

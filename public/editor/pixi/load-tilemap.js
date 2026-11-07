@@ -8,7 +8,7 @@ function imageFromBlob(blob) {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(blob), image = new Image();
     image.onload = () => { URL.revokeObjectURL(url); resolve(image); };
-    image.onerror = () => { URL.revokeObjectURL(url); reject(new Error('无法加载地图素材图片')); };
+    image.onerror = () => { URL.revokeObjectURL(url); reject(new Error('No se pudo cargar la imagen de los recursos del mapa')); };
     image.src = url;
   });
 }

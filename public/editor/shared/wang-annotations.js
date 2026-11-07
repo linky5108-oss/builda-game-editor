@@ -1,7 +1,7 @@
 export const DEFAULT_LABEL_COLORS = ['#efb84a','#5fbc78','#56a4ef','#e780ad','#ad8ce8','#f08a51'];
 // Row-major 3×3 annotation cells: NW,N,NE,W,center,E,SW,S,SE.
 export const EDGE_CELLS = [1,5,7,3];
-export const CELL_NAMES = ['左上角','上边','右上角','左边','中心','右边','左下角','下边','右下角'];
+export const CELL_NAMES = ['Esquina superior izquierda','Borde superior','Esquina superior derecha','Borde izquierdo','Centro','Borde derecho','Esquina inferior izquierda','Borde inferior','Esquina inferior derecha'];
 export function annotationCells(tile) {
   if(tile.annotations) return [...tile.annotations];
   const cells=Array(9).fill(null);

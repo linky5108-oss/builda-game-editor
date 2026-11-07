@@ -1,45 +1,45 @@
 import { attachGestures } from './camera.js';
 
 // Map extent preview in cell coordinates; changes are applied only on confirmation.
-export function createResizePanel({ map, camera, tileSize, onOpen, onApply, onCamera, parent = document.body, prefix = '', title = '地图尺寸', unit = '格', minSize = 1, maxSize = 512 }) {
+export function createResizePanel({ map, camera, tileSize, onOpen, onApply, onCamera, parent = document.body, prefix = '', title = 'Tamaño del mapa', unit = 'casillas', minSize = 1, maxSize = 512 }) {
   const make = (tag, props = {}, children = []) => {
     if(prefix&&props.id){props={...props,className:prefix+props.id};delete props.id;}
     const node = Object.assign(document.createElement(tag), props);
     node.append(...children);
     return node;
   };
-  const entry = make('button', { id: 'resize-entry', title: '调整'+title, innerHTML: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5M3 3l6 6m12-6-6 6M3 21l6-6m12 6-6-6"/></svg>' });
-  entry.setAttribute('aria-label', '调整'+title);
+  const entry = make('button', { id: 'resize-entry', title: 'Ajustar'+title, innerHTML: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5M3 3l6 6m12-6-6 6M3 21l6-6m12 6-6-6"/></svg>' });
+  entry.setAttribute('aria-label', 'Ajustar'+title);
   const surface = make('div', { id: 'resize-surface', hidden: true });
   const guides = make('div', { id: 'map-boundaries' });
   guides.setAttribute('aria-hidden', 'true');
   const guideLines = {};
   const panel = make('form', { id: 'resize-panel', hidden: true });
-  panel.setAttribute('aria-label', title+'属性');
+  panel.setAttribute('aria-label', title+'Propiedades');
   const width = make('input', { type: 'number', min: minSize, max: maxSize, required: true });
   const height = make('input', { type: 'number', min: minSize, max: maxSize, required: true });
   const fields = make('div', { className: 'resize-fields' }, [
-    make('label', {}, ['宽度', make('div', { className: 'number-with-unit' }, [width, make('small', { textContent: unit })])]),
-    make('label', {}, ['高度', make('div', { className: 'number-with-unit' }, [height, make('small', { textContent: unit })])]),
+    make('label', {}, ['Ancho', make('div', { className: 'number-with-unit' }, [width, make('small', { textContent: unit })])]),
+    make('label', {}, ['Alto', make('div', { className: 'number-with-unit' }, [height, make('small', { textContent: unit })])]),
   ]);
   const anchorGrid = make('div', { className: 'resize-anchors' });
   anchorGrid.setAttribute('role', 'group');
-  anchorGrid.setAttribute('aria-label', '固定位置（向其余方向扩展）');
-  const names = ['左上', '上', '右上', '左', '中心', '右', '左下', '下', '右下'];
+  anchorGrid.setAttribute('aria-label', 'Posición fija (se expande hacia las demás direcciones)');
+  const names = ['Arriba a la izquierda', 'Arriba', 'Arriba a la derecha', 'Izquierda', 'Centro', 'Derecha', 'Abajo a la izquierda', 'Abajo', 'Abajo a la derecha'];
   const symbols = ['↖', '↑', '↗', '←', '•', '→', '↙', '↓', '↘'];
   let anchor = 4;
   let rect;
   const anchors = names.map((name, i) => {
-    const b = make('button', { type: 'button', title: `固定${name}`, textContent: symbols[i] });
-    b.setAttribute('aria-label', `固定${name}`);
+    const b = make('button', { type: 'button', title: `Fijar: ${name}`, textContent: symbols[i] });
+    b.setAttribute('aria-label', `Fijar: ${name}`);
     b.addEventListener('click', () => { anchor = i; fromFields(); });
     anchorGrid.append(b);
     return b;
   });
-  const cancel = make('button', { type: 'button', textContent: '取消' });
-  const apply = make('button', { type: 'button', textContent: '应用', className: 'primary' });
+  const cancel = make('button', { type: 'button', textContent: 'Cancelar' });
+  const apply = make('button', { type: 'button', textContent: 'Aplicar', className: 'primary' });
   panel.append(make('header', {}, [make('strong', { textContent: title }), cancel, apply]), fields,
-    make('div', { className: 'resize-direction' }, [make('div', {}, [make('strong', { textContent: '扩展方向' }), make('p', { textContent: '选择固定位置，向其余方向扩展' })]), anchorGrid]));
+    make('div', { className: 'resize-direction' }, [make('div', {}, [make('strong', { textContent: 'Dirección de expansión' }), make('p', { textContent: 'Elige la posición fija; se expande hacia las demás direcciones' })]), anchorGrid]));
   const lines = {};
   for (const edge of ['left', 'right', 'top', 'bottom']) {
     const line = make('div', { className: `resize-edge ${edge}` });

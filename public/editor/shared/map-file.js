@@ -9,7 +9,7 @@ export function writeMapFile(map, config) {
 
 export function readMapFile(text, config) {
   const data = JSON.parse(text);
-  const invalid = () => { throw new Error('地图文件格式不正确或已损坏'); };
+  const invalid = () => { throw new Error('El formato del archivo de mapa es incorrecto o está dañado'); };
   if (!data || data.v !== 2 || (data.format && data.format !== 'tilemap') ||
       (data.name !== undefined && (typeof data.name !== 'string' || !data.name.trim() || data.name.length > 80)) ||
       (data.tileSize !== undefined && (!Number.isInteger(data.tileSize) || data.tileSize < 8 || data.tileSize > 128)) ||
@@ -45,6 +45,6 @@ export function readMapFile(text, config) {
       if (!objects.has(layer.assetMap[o.id])) missing.add(layer.assetMap[o.id]);
     }
   }
-  if (missing.size) throw new Error(`请先打开地图使用的图块集：${[...missing].slice(0, 5).join('、')}`);
+  if (missing.size) throw new Error(`Primero abre el conjunto de bloques que usa el mapa: ${[...missing].slice(0, 5).join(', ')}`);
   return deserializeMap(data, config);
 }

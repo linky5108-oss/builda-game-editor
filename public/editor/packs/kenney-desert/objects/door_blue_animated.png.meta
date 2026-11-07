@@ -1,11 +1,11 @@
 {
   "name": "door_blue",
-  "label": "控制室门",
+  "label": "Puerta de sala de control",
   "frameCount": 2,
   "animations": [
     {
       "name": "closed",
-      "label": "关闭",
+      "label": "Cerrado",
       "frames": [
         1,
         0
@@ -14,7 +14,7 @@
     },
     {
       "name": "open",
-      "label": "打开",
+      "label": "Abierto",
       "frames": [
         0,
         1

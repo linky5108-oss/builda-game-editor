@@ -1,25 +1,25 @@
 {
   "name": "portal",
-  "label": "旋涡传送阵",
+  "label": "Portal de remolino",
   "frameCount": 2,
   "animations": [
     {
       "name": "active",
-      "label": "启动",
+      "label": "Activar",
       "frames": [
         0
       ]
     },
     {
       "name": "inactive",
-      "label": "关闭",
+      "label": "Cerrado",
       "frames": [
         1
       ]
     },
     {
       "name": "cycle",
-      "label": "闪烁",
+      "label": "Parpadear",
       "frames": [
         0,
         1

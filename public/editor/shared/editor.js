@@ -204,7 +204,7 @@ export class History {
 
   resizeMap(width, height, left = 0, top = 0) {
     if (![width, height, left, top].every(Number.isInteger) || width < 1 || height < 1 || width > 512 || height > 512)
-      throw new RangeError('地图宽高必须为 1–512 格');
+      throw new RangeError('El ancho y alto del mapa deben estar entre 1 y 512 casillas');
     if (width === this.map.width && height === this.map.height && !left && !top) return;
     const before = {
       width: this.map.width,
@@ -249,7 +249,7 @@ export class History {
 
   duplicateLayer(index) {
     const source = this.map.layers[index];
-    const copy = this.map.createLayer(`${source.name} 副本`);
+    const copy = this.map.createLayer(`${source.name} copia`);
     copy.grid.cells.set(source.grid.cells);
     copy.grid.links.set(source.grid.links);
     copy.grid.wang = structuredClone(source.grid.wang);
