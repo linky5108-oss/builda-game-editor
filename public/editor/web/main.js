@@ -3,7 +3,7 @@ import { terrainMask } from '../shared/terrain-strategies.js';
 // Each layer's tiles are composed once into its own offscreen buffer at 1:1;
 // each frame blits the visible buffers through the camera, shifted by each
 // layer's pixel offset, so panning and zooming cost one drawImage per layer.
-import { displayTileOrigin, objectDepth, objectFrame, objectRect, sheetFrames, terrainUsesCellPlacement, terrainHeights } from '../shared/grid.js';
+import { displayTileOrigin, objectDepth, objectFrame, objectRect, objectTransform, sheetFrames, terrainUsesCellPlacement, terrainHeights } from '../shared/grid.js';
 import { runDemo } from '../shared/app.js';
 
 
@@ -112,7 +112,15 @@ runDemo(async ({ config, map, sheets, greySheets, objectSprites, greyObjectSprit
       const sx = objectFrame(def, now, o) * def.sw; // one frame of the strip (its animation)
       raised.push([
         objectDepth(def, o, T),
-        () => bctx.drawImage(sprites[o.type], sx, 0, def.sw, def.sh, r.left, r.top, def.sw, def.sh),
+        () => {
+          const m = objectTransform(def, o, T);
+          bctx.save();
+          bctx.translate(m.cx, m.cy);
+          if (m.angle) bctx.rotate(m.angle);
+          if (m.flip) bctx.scale(-1, 1);
+          bctx.drawImage(sprites[o.type], sx, 0, def.sw, def.sh, -m.w / 2, -m.h / 2, m.w, m.h);
+          bctx.restore();
+        },
       ]);
     }
     raised.sort((a, b) => a[0] - b[0]);

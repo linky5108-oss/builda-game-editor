@@ -495,6 +495,24 @@ export class ToolController {
     return this.#patchSelected(playing ? null : { paused: true }, rest);
   }
 
+  // Scale / rotate / flip the selected object; one undo step. Default values
+  // are dropped so untouched objects keep the original file format.
+  setSelectedObjectTransform(patch) {
+    const o = this.selectedObject;
+    if (!o) return new Map();
+    const next = { scale: o.scale ?? 1, rotation: o.rotation ?? 0, flip: !!o.flip, ...patch };
+    next.scale = Math.min(8, Math.max(0.1, Math.round(Number(next.scale) * 100) / 100 || 1));
+    next.rotation = ((Math.round(Number(next.rotation) || 0) % 360) + 540) % 360 - 180;
+    if (next.rotation === -180) next.rotation = 180;
+    if (next.scale === (o.scale ?? 1) && next.rotation === (o.rotation ?? 0) && next.flip === !!o.flip) return new Map();
+    const { scale, rotation, flip, ...rest } = o;
+    const out = {};
+    if (next.scale !== 1) out.scale = next.scale;
+    if (next.rotation !== 0) out.rotation = next.rotation;
+    if (next.flip) out.flip = true;
+    return this.#patchSelected(out, rest);
+  }
+
   // Replace the selected object by a copy with `patch` applied (onto `base`,
   // default the object itself), as one undo step; it stays selected.
   #patchSelected(patch, base = this.selectedObject) {

@@ -255,6 +255,10 @@ async function start(createRenderer) {
       redraw(tools.setSelectedObjectPlaying(playing));
       placeSelectionBar();
     },
+    onTransform: (patch) => {
+      redraw(tools.setSelectedObjectTransform(patch));
+      placeSelectionBar();
+    },
   });
   const wangProps = createWangProps({ config, map, tools, selection, history, sheets, changed: dirty => {
     redraw(dirty); overlay.refresh();

@@ -383,9 +383,22 @@ export function objectCovers(def, obj, x, y) {
 // Sprite rect in map pixels: bottom on the footprint's bottom edge,
 // horizontally centred on it.
 export function objectRect(def, obj, T) {
+  const { cx, cy, w, h, angle } = objectTransform(def, obj, T);
+  const c = Math.abs(Math.cos(angle)), s = Math.abs(Math.sin(angle));
+  const hw = (w * c + h * s) / 2, hh = (w * s + h * c) / 2;
+  return { left: cx - hw, top: cy - hh, right: cx + hw, bottom: cy + hh };
+}
+
+// Placed-object transform: scale (uniform, default 1) keeps the sprite's
+// bottom centre on the footprint; rotation (degrees) turns it around its
+// centre; flip mirrors it horizontally.
+export function objectTransform(def, obj, T) {
+  const k = Number.isFinite(obj.scale) && obj.scale > 0 ? obj.scale : 1;
+  const w = def.sw * k, h = def.sh * k;
   const bottom = (obj.y + def.h) * T;
-  const left = (obj.x + def.w / 2) * T - def.sw / 2;
-  return { left, top: bottom - def.sh, right: left + def.sw, bottom };
+  const cx = (obj.x + def.w / 2) * T;
+  const angle = ((Number.isFinite(obj.rotation) ? obj.rotation : 0) * Math.PI) / 180;
+  return { cx, cy: bottom - h / 2, w, h, angle, flip: !!obj.flip };
 }
 
 // Draw-order key of an object among raised tiles (which sort by the y where

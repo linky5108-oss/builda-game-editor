@@ -41,7 +41,10 @@ export function readMapFile(text, config) {
     for (const o of layer.objects) {
       if (!o || typeof o.id!=='string' || o.id.length!==1 || !Object.hasOwn(layer.assetMap,o.id) || !validUUID(layer.assetMap[o.id]) ||
           !Number.isInteger(o.x) || !Number.isInteger(o.y) ||
-          (o.name !== undefined && typeof o.name !== 'string')) invalid();
+          (o.name !== undefined && typeof o.name !== 'string') ||
+          (o.scale !== undefined && !(Number.isFinite(o.scale) && o.scale >= 0.1 && o.scale <= 8)) ||
+          (o.rotation !== undefined && !Number.isFinite(o.rotation)) ||
+          (o.flip !== undefined && typeof o.flip !== 'boolean')) invalid();
       if (!objects.has(layer.assetMap[o.id])) missing.add(layer.assetMap[o.id]);
     }
   }
